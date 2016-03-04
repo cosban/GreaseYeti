@@ -35,7 +35,7 @@ This fork of GreaseYETI (updated from the 2.23 source by headbanger at [xatal.co
 3. Pick and choose how you want shit to be
 4. Don't forget to save!
 
-The latest STABLE version of this fork can always be found at [cosban.net](https://cosban.net/static/txt/greaseyeti.user.js)
+The latest STABLE version of this fork can always be found at [cosban.net](https://cosban.net/static/raw/greaseyeti.user.js)
 
 GreaseYETI adds a link in your user profile to your settings page.
 
