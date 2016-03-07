@@ -90,7 +90,7 @@ if (url.indexOf('loser.php?settings') != -1) {
         'text-align': 'center',
         'border': '1px rgba(0,0,0,0.3) solid'
     });
-	$('table#ignorating').css({
+    $('table#ignorating').css({
         'min-width': '60%',
         'margin': '10px',
         'text-align': 'center',
@@ -111,7 +111,7 @@ if (url.indexOf('loser.php?settings') != -1) {
     $('#add_highlight').click(function() {
         $(this).parent().parent().before('<tr class="huser"><td><input type="text" class="highlight_username" /></td><td><input type="text" class="highlight_color" /></td><td><input type="checkbox" class="highlight_posts" /></td><td><input type="checkbox" class="highlight_topics" /></td><td>&nbsp;</td><td class="highlight_remove"><a style="color: #a33">X</a></td></tr>');
     });
-	$('#add_ignorate').click(function() {
+    $('#add_ignorate').click(function() {
         $(this).parent().parent().before('<tr class="iguser"><td><input type="text" class="ignorate_username" /></td><td><input type="text" class="ignorate_userid" /></td><td class="highlight_remove"><a style="color: #a33">X</a></td></tr>');
     });
     $('.highlight_color, #my_color').each(function() {
@@ -123,7 +123,7 @@ if (url.indexOf('loser.php?settings') != -1) {
     $(document).on('click', '.huser a', function() {
         $(this).parent().parent().remove();
     });
-	$(document).on('click', '.iguser a', function() {
+    $(document).on('click', '.iguser a', function() {
         $(this).parent().parent().remove();
     });
     // SAVE THE SETTINGS
@@ -178,7 +178,7 @@ if (url.indexOf('loser.php?settings') != -1) {
         greaseyeti.my_topics = $('#my_topics').is(':checked');
         greaseyeti.my_anon = $('#my_anon').is(':checked');
         greaseyeti.highlighted_users = [];
-		greaseyeti.ignorated_users = [];
+        greaseyeti.ignorated_users = [];
         $('tr.huser').each(function() {
             var thisuser = new Object();
             thisuser.username = $(this).find('.highlight_username').val();
@@ -187,7 +187,7 @@ if (url.indexOf('loser.php?settings') != -1) {
             thisuser.topics = $(this).find('.highlight_topics').is(':checked');
             greaseyeti.highlighted_users.push(thisuser);
         });
-		$('tr.iguser').each(function() {
+        $('tr.iguser').each(function() {
             var thisuser = new Object();
             thisuser.username = $(this).find('.ignorate_username').val();
             thisuser.userid = $(this).find('.ignorate_userid').val();
@@ -752,17 +752,17 @@ function processTopicList() {
 
         var topic_creator = $(this).children().eq(1).find('a').text();
         if (topic_creator.length != 0) { // Skip Anon topics
-		    var tc_id = $(this).children().eq(1).html();
-		    tc_id = tc_id.substring(tc_id.indexOf('r=')+2,tc_id.indexOf('\">'));
-		    if (isIgnorated(topic_creator, tc_id)) {
-				console.log('Ignorated ' + topic_creator);
-				cells[0].parentNode.style.display = 'none';
-			} else {
+            var tc_id = $(this).children().eq(1).html();
+            tc_id = tc_id.substring(tc_id.indexOf('r=') + 2, tc_id.indexOf('\">'));
+            if (isIgnorated(topic_creator, tc_id)) {
+                console.log('Ignorated ' + topic_creator);
+                cells[0].parentNode.style.display = 'none';
+            } else {
                 var highlight_color = getHighlightColor(topic_creator, false);
                 if (highlight_color !== false) {
                     cells.css('background-color', highlight_color);
                 }
-			}
+            }
         }
         // Post updates into new windows
 
@@ -917,7 +917,7 @@ function processPosts(page_number) {
     messages.each(function(i) {
         // Only let these happen on the first pass over a message
         if ($(this).hasClass('greaseyeti_checked')) return;
-		ignoratePost($(this));
+        ignoratePost($(this));
         addLikeAndRepeatOptions($(this));
         numberPost($(this), page_number, i);
         markEditedPosts($(this));
@@ -970,7 +970,7 @@ function highlightPost(message_container) {
         var message_top = $(this);
         var poster = findWhoPostedMessage(message_top.html());
         if (!anon_topic) {
-            // Make sure it's not an anon topic
+            // Make sure it's not an anon topic		
             if (poster.indexOf('#') != -1) {
                 anon_topic = true;
             } else {
@@ -989,15 +989,15 @@ function highlightPost(message_container) {
     });
 }
 
-function ignoratePost(message_container){
-	message_container.find('.message-top').each(function() {
-		var message_top = $(this);
-		var poster = findWhoPostedMessage(message_top.html());
-		var posterid = findWhoPostedUserId(message_top.html());
-		if (isIgnorated(poster, posterid)) {
-			$(this).parent().css('display', 'none');
-		}
-	});
+function ignoratePost(message_container) {
+    message_container.find('.message-top').each(function() {
+        var message_top = $(this);
+        var poster = findWhoPostedMessage(message_top.html());
+        var posterid = findWhoPostedUserId(message_top.html());
+        if (isIgnorated(poster, posterid)) {
+            $(this).parent().css('display', 'none');
+        }
+    });
 }
 
 function findMyHumanNumber() {
@@ -1373,14 +1373,14 @@ function populateHighlightedUsers() {
 }
 
 function populateIgnoratedUsers() {
-	var html = '';
-	var users = ch('ignorated_users', null);
-	if (users != null) {
-		for (var i = 0; i < users.length; i++) {
+    var html = '';
+    var users = ch('ignorated_users', null);
+    if (users != null) {
+        for (var i = 0; i < users.length; i++) {
             html += '<tr class="iguser"><td><input type="text" class="ignorate_username" value="' + users[i].username + '" /></td><td><input type="text" class="ignorate_userid" value="' + users[i].userid + '" /></td><td class="ignorate_remove"><a style="color: #a33">X</a></td></tr>';
         }
-	}
-	return html;
+    }
+    return html;
 }
 
 function checkForHighlight(user, where) {
@@ -1394,32 +1394,32 @@ function findWhoPostedMessage(message_top_html) {
     return poster_username;
 }
 
-function findWhoPostedUserId(message_top_html){
-	var regexp1 = /^(.*)From:(\<\/b\>)? (\<a href\="([^\d]+))?/i;
-	var regexp2 = /(\"\>[a-z\d ]+)(\<\/a\>)?( \(.+\))? \| (.+)$/i;
-	var posted_userid = message_top_html.replace(regexp1, '').replace(regexp2, '');
-	return posted_userid;
+function findWhoPostedUserId(message_top_html) {
+    var regexp1 = /^(.*)From:(\<\/b\>)? (\<a href\="([^\d]+))?/i;
+    var regexp2 = /(\"\>[a-z\d ]+)(\<\/a\>)?( \(.+\))? \| (.+)$/i;
+    var posted_userid = message_top_html.replace(regexp1, '').replace(regexp2, '');
+    return posted_userid;
 }
 
-function isIgnorated(user, userid){
-	var users = ch('ignorated_users', null);
-	for (var i = 0; i < users.length; i++) {
-		if (users[i].username === user || users[i].userid === userid) {
-			// update userid to the current poster id because it was blank
-			if(users[i].userid === 'undefined') {
-				console.log('updated userid')
-				users[i].userid = userid;
-				saveGreaseyeti(false);
-			}
-			// update username because the userid matched when username didn't (user changed their username)
-			if(users[i].username !== user){
-				console.log('updated username')
-				users[i].username = user;
-				saveGreaseyeti(false);
-			}
-			users[i].username = user;
-			return true;
-		}
-	}
-	return false;
+function isIgnorated(user, userid) {
+    var users = ch('ignorated_users', null);
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].username === user || users[i].userid === userid) {
+            // update userid to the current poster id because it was blank
+            if (users[i].userid.length === 0) {
+                console.log('Added a userid for ' + users[i].username);
+                users[i].userid = userid;
+                saveGreaseyeti(false);
+            }
+            // update username because the userid matched when username didn't (user changed their username)
+            if (users[i].username !== user) {
+                console.log('Updating username to match userid for ' + user);
+                users[i].username = user;
+                saveGreaseyeti(false);
+            }
+            users[i].username = user;
+            return true;
+        }
+    }
+    return false;
 }
