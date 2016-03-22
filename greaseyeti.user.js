@@ -15,12 +15,12 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.23
-// @updateURL http://xatal.com/scripts/greaseyeti.user.js
-// @downloadURL http://xatal.com/scripts/greaseyeti.user.js
+// @version 2.25
+// @updateURL https://cosban.net/static/raw/greaseyeti.user.js
+// @downloadURL https://cosban.net/static/raw/greaseyeti.user.js
 // ==/UserScript==
 var start = new Date().getTime();
-var version_num = 2.23;
+var version_num = 2.25;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' || typeof GM_xmlhttpRequest != 'function') {
     alert('Error: You need GM_setValue, GM_getValue, and GM_xmlhttpRequest functions to use GreaseYETI.');
@@ -678,7 +678,7 @@ function versionCheck() {
     if ((!ch('alert_new_versions') || ch('last_version_check', 0) + 43200 >= start / 1000) && !settings_page) return;
     GM_xmlhttpRequest({
         method: 'GET',
-        url: 'http://xatal.com/scripts/greaseyeti.json',
+        url: 'https://cosban.net/static/raw/greaseyeti.json',
         headers: {
             'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
             'Accept': 'application/atom+xml,application/xml,text/xml',
