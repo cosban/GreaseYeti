@@ -1413,9 +1413,9 @@ function versionCheck() {
                 `<tr>
     <td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">
     <strong>A new version of\tGreaseYETI is out.</strong><br />
-    <strong>Your version:</strong> ' + version_num.toFixed(2) + ' <strong>Current version:</strong> ' + 
-    result.version + '<br />' + 
-    result.changes + '<br />
+    <strong>Your version:</strong> ` + version_num.toFixed(2) + ` <strong>Current version:</strong> ` + 
+    result.version + `<br />` + 
+    result.changes + `<br />
     <a href="https://cosban.net/static/raw/greaseyeti.user.js">Update</a></td>
 </tr>`
               );
@@ -1426,7 +1426,7 @@ function versionCheck() {
                 result.version + '</td></tr>');
           }
         } else if(result.version > version_num) {
-          $('table.greaseyeti_settings')
+          $('body')
             .prepend(
               `<div style="position: absolute;
     top: 0;
