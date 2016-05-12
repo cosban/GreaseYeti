@@ -1331,7 +1331,7 @@ function versionCheck() {
               .prepend(
                 `  <tr>
 				<td style = "background: #ff8888; text-align: center; color: black; padding: 5px 0">
-					<strong> A new version of \ tGreaseYETI is out. </strong>  <br/>
+					<strong> A new version of GreaseYETI is out. </strong>  <br/>
 					<strong> Your version :  </strong>  ` +
                 version_num.toFixed(2) +
                 `  <strong> Current version :  </strong>  ` +
