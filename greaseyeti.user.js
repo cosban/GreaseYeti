@@ -467,7 +467,7 @@ Click "Add Word" to create a new row, then fill in the word or phrase. </p>
           <td>  <input type = "text" class = "highlight_color"/>  </td>
           <td>  <input type = "checkbox" class = "highlight_posts"/>  </td>
           <td>  <input type = "checkbox" class = "highlight_topics"/>  </td>
-          <td>  & nbsp;  </td>  <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
+          <td>  &nbsp;  </td>  <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
           </tr>  `
         );
     });
