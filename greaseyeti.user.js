@@ -11,17 +11,18 @@
 // @exclude https://evt*.endoftheinter.net/*
 // @exclude http://wiki.endoftheinter.net/*
 // @exclude https://wiki.endoftheinter.net/*
-// @require http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
+// @require https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.26
+// @connect cosban.net
+// @version 2.27
 // @updateURL https://cosban.net/static/raw/greaseyeti.user.js
 // @downloadURL https://cosban.net/static/raw/greaseyeti.user.js
 // ==/UserScript==
 var start = new Date()
   .getTime();
-var version_num = 2.26;
+var version_num = 2.27;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' ||
   typeof GM_xmlhttpRequest != 'function') {
@@ -64,7 +65,7 @@ forceHttps();
 // SETTINGS PAGE
 if (url.indexOf('loser.php?settings') != -1) {
   if (typeof greaseyeti === 'number')
-    greaseyeti = new Object();
+    greaseyeti = {};
   // DISPLAY SETTINGS - create some HTML.
   $('h1')
     .html('GreaseYETI Settings');
@@ -78,356 +79,258 @@ if (url.indexOf('loser.php?settings') != -1) {
  <td> Need help ? Have questions ? Want to suggest a new feature ? See the <a href = "//boards.endoftheinter.net/showmessages.php?topic=8607569"> GreaseYETI topic </a> . </td>
 </tr>
  <!--Stuff that applies everywhere-->
-<tr>
- <th> Everywhere </th>
-</tr>
-  <tr>
-<td>
+<tr><th> Everywhere </th>
+</tr><tr><td>
   <input type = "checkbox" id = "dramalinks" ` +
     settingCheck('dramalinks') +
-    `  / >
+    `  />
   <label for  = "dramalinks"> Add Dramalinks to current page </label>
  <p class = "desc"> Adds Dramalinks to the top of each page.You will need to enable 3rd party cookies in your browser. </p>
- </td>
- </tr>
- <tr>
- <td>
+ </td></tr><tr><td>
  <input type = "checkbox" id = "custom_titles" ` +
     settingCheck('custom_titles') +
-    `  / >
+    `  />
  <label for  = "custom_titles"> Custom title format for pages </label>
  <p class = "desc"> Allows you to use a custom format for the page title(or even shorten it).
-Enter in your custom title format below, where "%TITLE%" will be replaced by the actual page title(e.g."GreaseYETI Settings")
-.
+Enter in your custom title format below, where "%TITLE%" will be replaced by the actual page title(e.g."GreaseYETI Settings").
 For example, "End of the Internet - %TITLE%" is what LL uses by default. </p>
- <p>  <input type = "text" id = "title_format" size = "30" value = "` +
+ <p>  <input type = "text" id = "title_format" size = "30" value ="` +
     ch('title_format', 'End of the Internet - %TITLE%') +
-    `" / >  </p>
-</td>
-</tr>
-<tr>
-<td>
+    `" />  </p>
+</td></tr><tr><td>
 <input type = "checkbox" id = "message_history" ` +
     settingCheck('message_history') +
-    `  / >
+    `  />
 <label for  = "message_history"> Add link to old Message History to ETI bookmarks </label>
 <p class = "desc"> Adds a link to your <a href = "//boards.endoftheinter.net/history.php"> Message History </a> in the top bar, at the end of your tag bookmarks. </p>
-<input type = "checkbox" id = "history-topbar" ` +
-    settingCheck('history-topbar') +
-    `  / >
+<div>
+<input type = "checkbox" id = "history_topbar" ` +
+    settingCheck('history_topbar') +
+    `  />
 <label for  = "message_history"> Put in top nav-bar </label>
-<p class = "desc">Places this in the top nav-bar, right before the logout link instead of as the last "tag" link </p>
-</td>
-</tr>
-<tr>
-<td>
+<p class = "desc">Places this in the top nav-bar, just before the logout link instead of as the last "tag" link </p>
+</div></td></tr><tr><td>
 <input type = "checkbox" id = "alert_new_versions" ` +
     settingCheck('alert_new_versions') +
-    `  / >
+    `  />
 <label for  = "alert_new_versions"> Alert me when GreaseYETI is updated </label>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "force_https" ` +
     settingCheck('force_https') +
-    `  / >
+    `  />
 <label for  = "force_https"> Force ETI to use HTTPS </label>
 <p class = "desc"> Automatically redirects you to HTTPS </p>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "custom_css" ` +
     settingCheck('custom_css') +
-    `  / >
+    `  />
 <label for  = "custom_css"> Use custom CSS </label>
 <p class = "desc"> Select this box to add custom CSS rules.These rules will apply on the core LL pages, but <b> not </b> the Wiki. </p>
 <textarea id = "custom_css_rules">  ` +
     ch('custom_css_rules') +
     `  </textarea>
-</td>
-</tr>
+</td></tr>
 <!--Topic list settings-->
-<tr>
-<th> Topic Lists </th>
-</tr>
-<tr>
-<td>
+<tr><th> Topic Lists </th></tr><tr><td>
 <input type = "checkbox" id = "autoload" ` +
     settingCheck('autoload') +
-    `  / >
+    `  />
 <label for  = "autoload"> Autoload the next page of topics </label>
 <p class = "desc"> Automatically load the next page of topics when you scroll near to the bottom. </p>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "remove_topics" ` +
     settingCheck('remove_topics') +
-    `  / >
+    `  />
 <label for  = "remove_topics"> Option to remove topics </label>
 <p class = "desc"> Creates a link next to the timestamp for each topic.When clicked, the topic is removed from the topic list permanently.
 Disabling this will bring back removed topics. </p>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "highlight_topics" ` +
     settingCheck('highlight_topics') +
-    `  / >
+    `  />
 <label for  = "highlight_topics"> Option to highlight any topic </label>
 <p class = "desc"> Creates a link next to the timestamp for each topic.
 When clicked, the topic is highlighted until clicked again.
 Enter in a highlight color below. </p>
-<p>  <input type = "text" id = "highlight_color" value = "` +
+<p>  <input type = "text" id = "highlight_color" value ="` +
     ch('highlight_color', '#5cc') +
-    `" / >  </p>
-</td>
-</tr>
-<tr>
-<td>
+    `" />  </p>
+</td></tr><tr><td>
 <input type = "checkbox" id = "load_unread" ` +
     settingCheck('load_unread') +
-    `  / >
+    `  />
 <label for  = "load_unread"> Link to load unread topics </label>
 <p class = "desc"> Creates a link to load all topics with new posts.
 When clicked, each topic opens in a new tab. </p>
 <div>
 <input type = "checkbox" id = "posted_only" ` +
     settingCheck('posted_only') +
-    `  / >
-<label for  = "posted_only"> Only if viewing[Posted] </label>  <br / >
+    `  />
+<label for  = "posted_only"> Only if viewing[Posted] </label>  <br />
 <input type = "checkbox" id = "unread_title" ` +
     settingCheck('unread_title') +
-    `  / >
-<label for  = "unread_title"> Show number of unread topics in page title </label>  <br / >
+    `  />
+<label for  = "unread_title"> Show number of unread topics in page title </label>  <br />
 <input type = "checkbox" id = "disable_topics" ` +
     settingCheck('disable_topics') +
-    `  / >
+    `  />
 <label for  = "disable_topics"> Option to disable topics </label>
 <p class = "desc"> Creates a link next to the timestamp for each topic.
 When clicked, the topic will no longer open in the "Load Unread Topics" link, and will be grayed out. </p>
-</div>
-</td>
-</tr>
-<tr>
-<td>
+</div></td></tr><tr><td>
 <input type = "checkbox" id = "update_new_window" ` +
     settingCheck('update_new_window') +
-    `  / >
+    `  />
 <label for  = "update_new_window"> Open topic update links in a new window / tab </label>
 <p class = "desc"> Clicking the links in the Msgs column that show new posts since your last visit will open a new window </p>
-</td>
-</tr>
+</td></tr>
 <!--Message list settings-->
-<tr>
-<th> Message Lists </th>
-</tr>
-<tr>
-<td>
+<tr><th> Message Lists </th></tr><tr><td>
 <input type = "checkbox" id = "autoscroll" ` +
     settingCheck('autoscroll') +
-    `  / >
+    `  />
 <label for  = "autoscroll"> Scroll the topic automatically when new posts appear </label>
 <p class = "desc"> Scrolls the topic for you when new posts appear with Livelinks. </p>
 <p>
-<input type = "text" size = "8" id = "autoscroll_y" value = "` +
+<input type = "text" size = "8" id = "autoscroll_y" value ="` +
     ch('autoscroll_y', 400) +
-    `" / >
+    `" />
 <label for  = "autoscroll_y"> Maximum number of pixels from bottom to allow scroll </label>
 </p>
 <p class = "desc"> You must be within this distance from the bottom of the screen for the page to scroll. </p>
 <p>
 <input type = "checkbox" id = "page_change" ` +
     settingCheck('page_change') +
-    `  / >
+    `  />
 <label for  = "page_change"> Change the page automatically </label>
-</p>
-</td>
-</tr>
-<tr>
-<td>
+</p></td></tr><tr><td>
 <input type = "checkbox" id = "messages_in_title" ` +
     settingCheck('messages_in_title') +
-    `  / >
+    `  />
 <label for  = "messages_in_title"> Change title when there are new posts </label>
 <p class = "desc"> Adds a number in the title of the page in your browser tabs / window when there are new messages and the topic window does not have focus </label>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "stealth_logout" ` +
     settingCheck('stealth_logout') +
-    `  / >
+    `  />
 <label for  = "stealth_logout"> Ask me to confirm logging out </label>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "load_omitted" ` +
     settingCheck('load_omitted') +
-    `  / >
+    `  />
 <label for  = "load_omitted"> Load[quoted text omitted]by clicking </label>
 <p class = "desc"> Clicking on "[quoted text omitted]" will load the actual message and insert it. </p>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "word_break" ` +
     settingCheck('word_break') +
-    `  / >
+    `  />
 <label for  = "word_break"> Break page - stretching words into multiple lines </label>
 <p class = "desc"> Forces long words to be broken into multiple lines to eliminate horizontal page - stretching.
 Enter the maximum number of characters a word can contain below. </p>
-<p>  <input type = "text" id = "word_length" size = "8" value = "` +
+<p>  <input type = "text" id = "word_length" size = "8" value ="` +
     ch('word_length', 180) +
-    `" / >  </p>
-</td>
-</tr>
-<tr>
-<td>
+    `" />  </p>
+</td></tr><tr><td>
 <input type = "checkbox" id = "expand_images" ` +
     settingCheck('expand_images') +
-    `  / >
+    `  />
 <label for  = "expand_images"> Expand thumbnails with a click </label>
 <p class = "desc"> Clicking on a thumbnail expands the image into its full - sized version </p>
 <p>
 <input type = "checkbox" id = "expand_all" ` +
     settingCheck('expand_all') +
-    `  / >
+    `  />
 <label for  = "expand_all"> Create menu option to expand all thumbnails on a page </label>
-</p>
-</td>
-</tr>
-<tr>
-<td>
+</p></td></tr><tr><td>
 <input type = "checkbox" id = "resize_images" ` +
     settingCheck('resize_images') +
-    `  / >
+    `  />
 <label for  = "resize_images"> Resize large images to fit </label>
 <p class = "desc"> Resizes images that would stretch the page.Shift - clicking an image will show it full - sized. </p>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "open_spoilers" ` +
     settingCheck('open_spoilers') +
-    `  / >
+    `  />
 <label for  = "open_spoilers"> Userbar option to open all spoilers </label>
 <p class = "desc"> Creates a link in the userbar that will open all spoilers on a page when clicked. </p>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "mark_edited" ` +
     settingCheck('mark_edited') +
-    `  / >
+    `  />
 <label for  = "mark_edited"> Mark Message Detail link of edited posts </label>
 <p class = "desc"> Colors the Message Detail link when a post has been edited.Enter in the color below for the text. </p>
 <p>
-<input type = "text" id = "edited_color" value = "` +
+<input type = "text" id = "edited_color" value ="` +
     ch('edited_color', '#aa0000') +
-    `" / >
-</p>
-</td>
-</tr>
-<tr>
-<td>
+    `" />
+</p></td></tr><tr><td>
 <input type = "checkbox" id = "number_posts" ` +
     settingCheck('number_posts') +
-    `  / >
+    `  />
 <label for  = "number_posts"> Number Posts </label>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr><tr><td>
 <input type = "checkbox" id = "like_posts" ` +
     settingCheck('like_posts') +
-    `  / >
+    `  />
 <label for  = "like_posts"> Add option to "Like" a post </label>
 <p class = "desc"> Adds a "Like" option to the headers of each post. </p>
 <p>
 <input type = "checkbox" id = "like_automatic_post" ` +
     settingCheck('like_automatic_post') +
-    `  / >
+    `  />
 <label for  = "like_automatic_post"> Automatically submit the post </label>
-</p>
-</td>
-</tr>
-<tr>
-<td>
+</p></td></tr><tr><td>
 <input type = "checkbox" id = "repeat_posts" ` +
     settingCheck('repeat_posts') +
     ` " />
-<label for=" repeat_posts ">Add option to " Repeat " a post</label>
-<p class=" desc ">Adds a " Repeat " option to the headers of every post. Clicking this automatically quotes and submits the post.</p>
-</td>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" filter_me "` +
+<label for="repeat_posts">Add option to "Repeat" a post</label>
+<p class="desc">Adds a "Repeat" option to the headers of every post. Clicking this automatically quotes and submits the post.</p>
+</td></tr><tr><td>
+<input type="checkbox" id="filter_me"` +
     settingCheck('filter_me') +
     ` />
-<label for=" filter_me ">Create menu option to " Filter Me " in topics</label>
-</td>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" imgur_integration "` +
+<label for="filter_me">Create menu option to "Filter Me" in topics</label>
+</td></tr><tr><td>
+<input type="checkbox" id="imgur_integration"` +
     settingCheck('imgur_integration') +
     ` />
-<label for=" imgur_integration ">Automatically embed .gif/.webm/.gifv from Imgur</label>
-</td>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" chat_mode "` +
+<label for="imgur_integration">Automatically embed .gif/.webm/.gifv from Imgur</label>
+</td></tr><tr><td>
+<input type="checkbox" id="chat_mode"` +
     settingCheck('chat_mode') +
     ` />
-<label for=" chat_mode ">" Chat Mode " option</label>
-<p class=" desc ">Creates a toggle that turns on " Chat Mode ".
+<label for="chat_mode">"Chat Mode" option</label>
+<p class="desc">Creates a toggle that turns on "Chat Mode".
 Useful for topics where users post at a rapid rate, chat mode strips out most of the UI so you can keep up with the topic.</p>
-</td>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" autoexpand_quickpost "` +
+</td></tr><tr><td>
+<input type="checkbox" id="autoexpand_quickpost"` +
     settingCheck('autoexpand_quickpost') +
     ` />
-<label for=" autoexpand_quickpost ">Automatically expand quickpost when you enter a topic</label>
-</td>
-</tr>
+<label for="autoexpand_quickpost">Automatically expand quickpost when you enter a topic</label>
+</td></tr>
 <!-- Posting settings -->
-<tr>
-<th>Posting</th>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" lastfm_integration "` +
+<tr><th>Posting</th></tr><tr><td>
+<input type="checkbox" id="lastfm_integration"` +
     settingCheck('lastfm_integration') +
     ` />
-<label for=" lastfm_integration ">Integrate Last.fm into your posts</label>
-<p class=" desc ">Allows you to integrate Last.fm into your signature/posts.
+<label for="lastfm_integration">Integrate Last.fm into your posts</label>
+<p class="desc">Allows you to integrate Last.fm into your signature/posts.
 When submitting a post, %TRACK% will be replaced by " ARTIST ? TRACK ", and %TIME% will let you know when the track was played.<p>
-<input type=" text " id=" lastfm_username " size=" 25 " value=" ` +
+<input type="checkbox" id="lastfm_username " size="25" value=" ` +
     ch('lastfm_username', '') +
     ` " />
-<label for=" lastfm_username ">Last.fm Username</label><br />
-<input type=" text " id=" lastfm_freq " size=" 5 " value=" ` +
+<label for="lastfm_username">Last.fm Username</label><br />
+<input type="text" id="lastfm_freq " size="5" value=" ` +
     ch('lastfm_freq', '') +
     ` " />
-<label for=" lastfm_freq ">Update Frequency (minutes)</label></p>
-<p class=" desc ">After this many minutes, your Last.fm data will be refreshed.</p>
-</td>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" ctrl_key_shortcuts "` +
+<label for="lastfm_freq">Update Frequency (minutes)</label></p>
+<p class="desc">After this many minutes, your Last.fm data will be refreshed.</p>
+</td></tr><tr><td>
+<input type="checkbox""checkbox" id="ctrl_key_shortcuts"` +
     settingCheck('ctrl_key_shortcuts') +
     ` />
-<label for=" ctrl_key_shortcuts ">CTRL + [KEY] shortcuts for inserting tags in posts</label>
-<p class=" desc ">Allows you to use common CTRL + [KEY] combinations to insert tags into your posts.
+<label for="ctrl_key_shortcuts">CTRL + [KEY] shortcuts for inserting tags in posts</label>
+<p class="desc">Allows you to use common CTRL + [KEY] combinations to insert tags into your posts.
 You can select text and tags will appear outside, or you can insert them through normal typing.
 The combinations are:<br />
 CTRL + B - bold<br />
@@ -438,34 +341,22 @@ CTRL + M - spoiler with caption<br />
 CTRL + Q - quote<br />
 CTRL + P - preformatted<br />
 CTRL + G - mod
-</p>
-</td>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" confirm_leaving "` +
+</p></td></tr><tr><td>
+<input type="checkbox" id="confirm_leaving"` +
     settingCheck('confirm_leaving') +
     ` />
-<label for=" confirm_leaving ">Confirm leaving the page when I have a long message typed</label>
-<p class=" desc ">Pops up a confirmation window if you are about to leave a page where you have a long message typed</p>
-</td>
-</tr>
-<tr>
-<td>
-<input type=" checkbox " id=" preserve_messages "` +
+<label for="confirm_leaving">Confirm leaving the page when I have a long message typed</label>
+<p class="desc">Pops up a confirmation window if you are about to leave a page where you have a long message typed</p>
+</td></tr><tr><td>
+<input type="checkbox" id="preserve_messages"` +
     settingCheck('preserve_messages') +
     ` />
-<label for=" preserve_messages ">Preserve messages when I change the page</label>
-<p class=" desc ">Keeps your typed message when you change pages in a topic.</p>
-</td>
-</tr>
+<label for="preserve_messages">Preserve messages when I change the page</label>
+<p class="desc">Keeps your typed message when you change pages in a topic.</p>
+</td></tr>
 // Highlighting
-<tr>
-<th>Highlighting</th>
-</tr>
-<tr>
-<td>
-<p class=" desc ">You can highlight posts and topics from specific users.
+<tr><th>Highlighting</th></tr><tr><td>
+<p class="desc">You can highlight posts and topics from specific users.
 Click " Add User " to create a new row, then fill in the username and a <a href=" http : //www.colorpicker.com/" target="_blank">CSS color</a>.
 Then select whether you would like to highlight posts and / or topics. </p>
 <p class = "desc"> Your username is automatically added to the table to highlight your own content.
@@ -482,16 +373,9 @@ You can also highlight your posts in[Anonymous]topics. </p>
     populateHighlightedUsers() +
     `<tr>
 <td colspan = "6">  <button id = "add_highlight"> Add User </button>  </td>
-</tr>
-</table>
-</td>
-</tr>
+</tr></table></td></tr>
 <!--Ignorator-->
-<tr>
-<th> Ignorator </th>
-</tr>
-<tr>
-<td>
+<tr><th> Ignorator </th></tr><tr><td>
 <p class = "desc"> You can ignore posts and topics from specific users.
 Click "Add User" to create a new row, then fill in the username or userid. </p>
 <p class = "desc"> GreaseYeti will always ignore by userid and attempt to update usernames whenever possible. </p>
@@ -504,16 +388,9 @@ Click "Add User" to create a new row, then fill in the username or userid. </p>
     populateIgnoratedUsers() +
     `<tr>
 <td colspan = "6">  <button id = "add_ignorate"> Add User </button>  </td>
-</tr>
-</table>
-</td>
-</tr>
+</tr></table></td></tr>
 <!--Keyword / phrase Ignorator-->
-<tr>
-<th> Keyword Ignorator </th>
-</tr>
-<tr>
-<td>
+<tr><th> Keyword Ignorator </th></tr><tr><td>
 <p class = "desc"> You can ignore posts and topics with specific key words!
 Click "Add Word" to create a new row, then fill in the word or phrase. </p>
 <p class = "desc"> You may then select whether you want to ignore just the topcs, posts, or both.This is case -insensitive. </p>
@@ -528,21 +405,13 @@ Click "Add Word" to create a new row, then fill in the word or phrase. </p>
     populateIgnoratedKWords() +
     `  <tr>
 <td colspan = "6">  <button id = "add_kw_ignorate"> Add Word </button>  </td>
-</tr>
-</table>
-</td>
-</tr>
+</tr></table></td></tr>
 <!--Save button-->
-<tr>
-<th> Save </th>
-</tr>
-<tr>
+<tr><th> Save </th></tr><tr>
 <td style = "text-align: center">
-<button id = "gm_save"> Save Settings </button>  <br / >
+<button id = "gm_save"> Save Settings </button>  <br />
 <span id = "save_confirmation" style = "font-weight: bold;">  </span>
-</td>
-</tr>
-</tbody>  `;
+</td></tr></tbody>  `;
   // Apply the HTML and add some style
   $('.grid')
     .addClass('greaseyeti_settings')
@@ -593,13 +462,13 @@ Click "Add Word" to create a new row, then fill in the word or phrase. </p>
         .parent()
         .parent()
         .before(
-          `  < tr class = "huser" >
-          < td >  < input type = "text" class = "highlight_username" /  >  <  / td >
-          < td >  < input type = "text" class = "highlight_color" /  >  <  / td >
-          < td >  < input type = "checkbox" class = "highlight_posts" /  >  <  / td >
-          < td >  < input type = "checkbox" class = "highlight_topics" /  >  <  / td >
-          < td >  & nbsp;  <  / td >  < td class = "highlight_remove" >  < a style = "color: #a33" > X <  / a >  <  / td >
-          <  / tr >  `
+          `  <tr class = "huser">
+          <td>  <input type = "text" class = "highlight_username"/>  </td>
+          <td>  <input type = "text" class = "highlight_color"/>  </td>
+          <td>  <input type = "checkbox" class = "highlight_posts"/>  </td>
+          <td>  <input type = "checkbox" class = "highlight_topics"/>  </td>
+          <td>  & nbsp;  </td>  <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
+          </tr>  `
         );
     });
   $('#add_ignorate')
@@ -608,11 +477,11 @@ Click "Add Word" to create a new row, then fill in the word or phrase. </p>
         .parent()
         .parent()
         .before(
-          `  < tr class = "iguser" >
-          < td >  < input type = "text" class = "ignorate_username" /  >  <  / td >
-          < td >  < input type = "text" class = "ignorate_userid" /  >  <  / td >
-          < td class = "highlight_remove" >  < a style = "color: #a33" > X <  / a >  <  / td >
-          <  / tr >  `
+          `  <tr class = "iguser">
+          <td>  <input type = "text" class = "ignorate_username"/>  </td>
+          <td>  <input type = "text" class = "ignorate_userid"/>  </td>
+          <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
+          </tr>  `
         );
     });
   $('#add_kw_ignorate')
@@ -621,13 +490,13 @@ Click "Add Word" to create a new row, then fill in the word or phrase. </p>
         .parent()
         .parent()
         .before(
-          `  < tr class = "igkword" >
-          < td >  < input type = "text" class = "ignorate_kword" /  >  <  / td >
-          < td >  < input type = "checkbox" class = "kw_ignorate_regex" /  >  <  / td >
-          < td >  < input type = "checkbox" class = "kw_ignorate_posts" /  >  <  / td >
-          < td >  < input type = "checkbox" class = "kw_ignorate_topics" /  >  <  / td >
-          < td class = "highlight_remove" >  < a style = "color: #a33" > X <  / a >  <  / td >
-        <  / tr >  `
+          `  <tr class = "igkword">
+          <td>  <input type = "text" class = "ignorate_kword"/>  </td>
+          <td>  <input type = "checkbox" class = "kw_ignorate_regex"/>  </td>
+          <td>  <input type = "checkbox" class = "kw_ignorate_posts"/>  </td>
+          <td>  <input type = "checkbox" class = "kw_ignorate_topics"/>  </td>
+          <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
+        </tr>  `
         );
     });
   $('.highlight_color, #my_color')
@@ -679,6 +548,8 @@ Click "Add Word" to create a new row, then fill in the word or phrase. </p>
       greaseyeti.title_format = $('#title_format')
         .val();
       greaseyeti.message_history = $('#message_history')
+        .is(':checked');
+      greaseyeti.history_topbar = $('#history_topbar')
         .is(':checked');
       greaseyeti.alert_new_versions = $('#alert_new_versions')
         .is(':checked');
@@ -1051,7 +922,7 @@ function customTitles() {
 function messageHistoryLink() {
   if (!ch('message_history'))
     return;
-  if (ch('history-topbar')) {
+  if (ch('history_topbar')) {
     $('.menubar a:nth-child(6)')
       .before(
         '<a href="//boards.endoftheinter.net/history.php">Message History</a> | '
@@ -1458,17 +1329,17 @@ function versionCheck() {
           if (result.version > version_num) {
             $('table.greaseyeti_settings')
               .prepend(
-                `  < tr >
-				< td style = "background: #ff8888; text-align: center; color: black; padding: 5px 0" >
-					< strong > A new version of \ tGreaseYETI is out. <  / strong >  < br /  >
-					< strong > Your version :  <  / strong >  ` +
+                `  <tr>
+				<td style = "background: #ff8888; text-align: center; color: black; padding: 5px 0">
+					<strong> A new version of \ tGreaseYETI is out. </strong>  <br/>
+					<strong> Your version :  </strong>  ` +
                 version_num.toFixed(2) +
-                `  < strong > Current version :  <  / strong >  ` +
-                result.version + `  < br /  >  ` +
+                `  <strong> Current version :  </strong>  ` +
+                result.version + `  <br/>  ` +
                 result.changes +
-                `  < br /  >
-					< a href = "https://cosban.net/static/raw/greaseyeti.user.js" > Update <  / a >  <  / td >
-					<  / tr >  `
+                `  <br/>
+					<a href = "https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  </td>
+					</tr>  `
               );
           } else {
             $('table.greaseyeti_settings')
@@ -1479,7 +1350,7 @@ function versionCheck() {
         } else if (result.version > version_num) {
           $('body')
             .prepend(
-              `  < div style = "position: absolute;
+              `  <div style = "position: absolute;
 													   top: 0;
 													   left: 0;
 													   right: 0;
@@ -1487,12 +1358,12 @@ function versionCheck() {
 													   font-weight: bold;
 													   text-align: center;
 													   color: black;
-													   padding: 5px 0" >
-				< strong > A new version of GreaseYETI is out <  / strong >  |
-				< a href = "https://cosban.net/static/raw/greaseyeti.user.js" > Update <  / a >  |
-				< a href = "//endoftheinter.net/loser.php?settings" > View Changes <  / a >  |
-				< a style = "cursor: pointer; text-decoration: underline" id = "remove_bar_yeti" > Remove this damn bar <  / a >
-				<  / div >  `
+													   padding: 5px 0">
+				<strong> A new version of GreaseYETI is out </strong>  |
+				<a href = "https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  |
+				<a href = "//endoftheinter.net/loser.php?settings"> View Changes </a>  |
+				<a style = "cursor: pointer; text-decoration: underline" id = "remove_bar_yeti"> Remove this damn bar </a>
+				</div>  `
             );
           $('#remove_bar_yeti')
             .click(function () {
@@ -2296,7 +2167,7 @@ function enableChatMode() {
   // Add CSS rules
   $('body')
     .before(
-      `  < style type = "text/css" >
+      `  <style type = "text/css">
 															body.chat_mode td.userpic * {
 															height : 45px;
 															width : auto;
@@ -2304,13 +2175,13 @@ function enableChatMode() {
 														body.chat_mode td.userpic center {
 														display : none
 													}
-														body.chat_mode div.body > small {
+														body.chat_mode div.body> small {
 														display : none
 													}
 														body.chat_mode.message div + br {
 														display : none
 													}
-														body.chat_mode div.body > br {
+														body.chat_mode div.body> br {
 														display : none
 													}
 														body.chat_mode form.quickpost {
