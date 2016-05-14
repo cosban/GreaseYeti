@@ -1177,6 +1177,7 @@ function checkLastFM() {
       headers: {
         'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
         'Accept': 'application/atom+xml,application/xml,text/xml',
+		'Cache-Control': 'no-store',
       },
       onload: function (responseDetails) {
         if (responseDetails.status == 200) {
@@ -1277,6 +1278,7 @@ function versionCheck() {
     headers: {
       'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
       'Accept': 'application/atom+xml,application/xml,text/xml',
+	  'Cache-Control': 'no-store',
     },
     onload: function (responseDetails) {
       if (responseDetails.status == 200) {
@@ -1870,16 +1872,27 @@ function gfycatLinks(message_container) {
   // Check if each link is a valid gfycat link
   message_container.find('.message-body a').each(function () {
       var anchor_link = $(this).attr('href');
-      var gfycat_regexp = /^https?:\/\/(gfycat\.com\/[a-zA-Z0-9]+)$/i;
+      var gfycat_regexp = /^https?:\/\/gfycat\.com\/([a-zA-Z0-9]+)$/i;
       var matches = anchor_link.match(gfycat_regexp);
       // If so, separate into the "base" (which has the gfycat ID)
       // Wrap the media in a div (so we can center it later) and create the corresponding element.
-	  findMaxImageWidth();
       if (matches !== null) {
+		  console.log ("match");
+		  GM_xmlhttpRequest({
+		  method: 'GET',
+  		  url: 'https://gfycat.com/cajax/get/' + matches[1],
+		  onload: function (responseDetails) {
+			  if (responseDetails.status == 200) {
+				  var dl = JSON.parse(responseDetails.responseText);
+				  console.log(dl.gfyItem.webmUrl);
+			  }
+		  }
+	  });
+	  /*
         var gfycat_base = matches[1];
         $(this).wrap('<div class="greaseyeti_imgur"></div>');
-        $(this).before('<video loop controls src="//giant.' + gfycat_base + '.webm" '+
-		'style="max-width:' + max_img_size + 'px; height:auto"></video><br>');
+        $(this).before('<iframe style="border 0px;" src="https://gfycat.com/ifr/' + matches[1] + '" />');
+		*/
       }
     });
 }
