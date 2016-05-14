@@ -16,14 +16,14 @@
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
 // @connect cosban.net
-// @version 2.28
+// @version 2.28.1
 // @updateURL https://cosban.net/static/raw/greaseyeti.user.js
 // @downloadURL https://cosban.net/static/raw/greaseyeti.user.js
 // ==/UserScript==
 
 var start = new Date()
   .getTime();
-var version_num = 2.28;
+var version_num = 2.28.1;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' ||
   typeof GM_xmlhttpRequest != 'function') {
@@ -1871,6 +1871,7 @@ function gfycatLinks(message_container) {
   findMaxImageWidth();
   // Check if each link is a valid gfycat link
   message_container.find('.message-body a').each(function () {
+	  var msg_container = $(this);
       var anchor_link = $(this).attr('href');
       var gfycat_regexp = /^https?:\/\/gfycat\.com\/([a-zA-Z0-9]+)$/i;
       var matches = anchor_link.match(gfycat_regexp);
@@ -1884,15 +1885,12 @@ function gfycatLinks(message_container) {
 		  onload: function (responseDetails) {
 			  if (responseDetails.status == 200) {
 				  var dl = JSON.parse(responseDetails.responseText);
-				  console.log(dl.gfyItem.webmUrl);
+				  msg_container.wrap('<div class="greaseyeti_imgur"></div>');
+				  msg_container.before('<video loop controls src="' + dl.gfyItem.webmUrl + 
+				  '" style="max-width:' + max_img_size + 'px; height:auto"></video><br>');
 			  }
 		  }
 	  });
-	  /*
-        var gfycat_base = matches[1];
-        $(this).wrap('<div class="greaseyeti_imgur"></div>');
-        $(this).before('<iframe style="border 0px;" src="https://gfycat.com/ifr/' + matches[1] + '" />');
-		*/
       }
     });
 }
