@@ -16,13 +16,14 @@
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
 // @connect cosban.net
-// @version 2.27
+// @version 2.28
 // @updateURL https://cosban.net/static/raw/greaseyeti.user.js
 // @downloadURL https://cosban.net/static/raw/greaseyeti.user.js
 // ==/UserScript==
+
 var start = new Date()
   .getTime();
-var version_num = 2.27;
+var version_num = 2.28;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' ||
   typeof GM_xmlhttpRequest != 'function') {
@@ -295,7 +296,14 @@ Enter the maximum number of characters a word can contain below. </p>
     settingCheck('imgur_integration') +
     ` />
 <label for="imgur_integration">Automatically embed .gif/.webm/.gifv from Imgur</label>
-</td></tr><tr><td>
+</td></tr>
+<tr><td>
+<input type="checkbox" id="gfycat_integration"` +
+    settingCheck('gfycat_integration') +
+    ` />
+<label for="gfycat_integration">Automatically embed .webm from gfycat</label>
+</td></tr>
+<tr><td>
 <input type="checkbox" id="chat_mode"` +
     settingCheck('chat_mode') +
     ` />
@@ -541,108 +549,57 @@ Click "Add Word" to create a new row, then fill in the word or phrase. </p>
   // SAVE THE SETTINGS
   document.getElementById('gm_save')
     .addEventListener('click', function () {
-      greaseyeti.dramalinks = $('#dramalinks')
-        .is(':checked');
-      greaseyeti.custom_titles = $('#custom_titles')
-        .is(':checked');
-      greaseyeti.title_format = $('#title_format')
-        .val();
-      greaseyeti.message_history = $('#message_history')
-        .is(':checked');
-      greaseyeti.history_topbar = $('#history_topbar')
-        .is(':checked');
-      greaseyeti.alert_new_versions = $('#alert_new_versions')
-        .is(':checked');
-      greaseyeti.force_https = $('#force_https')
-        .is(':checked');
-      greaseyeti.custom_css = $('#custom_css')
-        .is(':checked');
-      greaseyeti.custom_css_rules = $('#custom_css_rules')
-        .val();
-      greaseyeti.autoload = $('#autoload')
-        .is(':checked');
-      greaseyeti.remove_topics = $('#remove_topics')
-        .is(':checked');
-      greaseyeti.highlight_topics = $('#highlight_topics')
-        .is(':checked');
-      greaseyeti.highlight_color = $('#highlight_color')
-        .val();
-      greaseyeti.load_unread = $('#load_unread')
-        .is(':checked');
-      greaseyeti.posted_only = $('#posted_only')
-        .is(':checked');
-      greaseyeti.unread_title = $('#unread_title')
-        .is(':checked');
-      greaseyeti.disable_topics = $('#disable_topics')
-        .is(':checked');
-      greaseyeti.update_new_window = $('#update_new_window')
-        .is(':checked');
-      greaseyeti.autoscroll = $('#autoscroll')
-        .is(':checked');
-      greaseyeti.autoscroll_y = $('#autoscroll_y')
-        .val();
-      greaseyeti.page_change = $('#page_change')
-        .is(':checked');
-      greaseyeti.messages_in_title = $('#messages_in_title')
-        .is(':checked');
-      greaseyeti.stealth_logout = $('#stealth_logout')
-        .is(':checked');
-      greaseyeti.load_omitted = $('#load_omitted')
-        .is(':checked');
-      greaseyeti.word_break = $('#word_break')
-        .is(':checked');
-      greaseyeti.word_length = $('#word_length')
-        .val();
-      greaseyeti.expand_images = $('#expand_images')
-        .is(':checked');
-      greaseyeti.expand_all = $('#expand_all')
-        .is(':checked');
-      greaseyeti.resize_images = $('#resize_images')
-        .is(':checked');
-      greaseyeti.open_spoilers = $('#open_spoilers')
-        .is(':checked');
-      greaseyeti.mark_edited = $('#mark_edited')
-        .is(':checked');
-      greaseyeti.edited_color = $('#edited_color')
-        .val();
-      greaseyeti.number_posts = $('#number_posts')
-        .is(':checked');
-      greaseyeti.like_posts = $('#like_posts')
-        .is(':checked');
-      greaseyeti.like_automatic_post = $('#like_automatic_post')
-        .is(
-          ':checked');
-      greaseyeti.repeat_posts = $('#repeat_posts')
-        .is(':checked');
-      greaseyeti.filter_me = $('#filter_me')
-        .is(':checked');
-      greaseyeti.imgur_integration = $('#imgur_integration')
-        .is(':checked');
-      greaseyeti.chat_mode = $('#chat_mode')
-        .is(':checked');
-      greaseyeti.autoexpand_quickpost = $('#autoexpand_quickpost')
-        .is(
-          ':checked');
-      greaseyeti.lastfm_integration = $('#lastfm_integration')
-        .is(':checked');
-      greaseyeti.lastfm_username = $('#lastfm_username')
-        .val();
-      greaseyeti.lastfm_freq = $('#lastfm_freq')
-        .val();
-      greaseyeti.ctrl_key_shortcuts = $('#ctrl_key_shortcuts')
-        .is(':checked');
-      greaseyeti.confirm_leaving = $('#confirm_leaving')
-        .is(':checked');
-      greaseyeti.preserve_messages = $('#preserve_messages')
-        .is(':checked');
-      greaseyeti.my_color = $('#my_color')
-        .val();
-      greaseyeti.my_posts = $('#my_posts')
-        .is(':checked');
-      greaseyeti.my_topics = $('#my_topics')
-        .is(':checked');
-      greaseyeti.my_anon = $('#my_anon')
-        .is(':checked');
+      greaseyeti.dramalinks = $('#dramalinks').is(':checked');
+      greaseyeti.custom_titles = $('#custom_titles').is(':checked');
+      greaseyeti.title_format = $('#title_format').val();
+      greaseyeti.message_history = $('#message_history').is(':checked');
+      greaseyeti.history_topbar = $('#history_topbar').is(':checked');
+      greaseyeti.alert_new_versions = $('#alert_new_versions').is(':checked');
+      greaseyeti.force_https = $('#force_https').is(':checked');
+      greaseyeti.custom_css = $('#custom_css').is(':checked');
+      greaseyeti.custom_css_rules = $('#custom_css_rules').val();
+      greaseyeti.autoload = $('#autoload').is(':checked');
+      greaseyeti.remove_topics = $('#remove_topics').is(':checked');
+      greaseyeti.highlight_topics = $('#highlight_topics').is(':checked');
+      greaseyeti.highlight_color = $('#highlight_color').val();
+      greaseyeti.load_unread = $('#load_unread').is(':checked');
+      greaseyeti.posted_only = $('#posted_only').is(':checked');
+      greaseyeti.unread_title = $('#unread_title').is(':checked');
+      greaseyeti.disable_topics = $('#disable_topics').is(':checked');
+      greaseyeti.update_new_window = $('#update_new_window').is(':checked');
+      greaseyeti.autoscroll = $('#autoscroll').is(':checked');
+      greaseyeti.autoscroll_y = $('#autoscroll_y').val();
+      greaseyeti.page_change = $('#page_change').is(':checked');
+      greaseyeti.messages_in_title = $('#messages_in_title').is(':checked');
+      greaseyeti.stealth_logout = $('#stealth_logout').is(':checked');
+      greaseyeti.load_omitted = $('#load_omitted').is(':checked');
+      greaseyeti.word_break = $('#word_break').is(':checked');
+      greaseyeti.word_length = $('#word_length').val();
+      greaseyeti.expand_images = $('#expand_images').is(':checked');
+      greaseyeti.expand_all = $('#expand_all').is(':checked');
+      greaseyeti.resize_images = $('#resize_images').is(':checked');
+      greaseyeti.open_spoilers = $('#open_spoilers').is(':checked');
+      greaseyeti.mark_edited = $('#mark_edited').is(':checked');
+      greaseyeti.edited_color = $('#edited_color').val();
+      greaseyeti.number_posts = $('#number_posts').is(':checked');
+      greaseyeti.like_posts = $('#like_posts').is(':checked');
+      greaseyeti.like_automatic_post = $('#like_automatic_post').is(':checked');
+      greaseyeti.repeat_posts = $('#repeat_posts').is(':checked');
+      greaseyeti.filter_me = $('#filter_me').is(':checked');
+      greaseyeti.imgur_integration = $('#imgur_integration').is(':checked');
+      greaseyeti.gfycat_integration = $('#gfycat_integration').is(':checked');
+      greaseyeti.chat_mode = $('#chat_mode').is(':checked');
+      greaseyeti.autoexpand_quickpost = $('#autoexpand_quickpost').is(':checked');
+      greaseyeti.lastfm_integration = $('#lastfm_integration').is(':checked');
+      greaseyeti.lastfm_username = $('#lastfm_username').val();
+      greaseyeti.lastfm_freq = $('#lastfm_freq').val();
+      greaseyeti.ctrl_key_shortcuts = $('#ctrl_key_shortcuts').is(':checked');
+      greaseyeti.confirm_leaving = $('#confirm_leaving').is(':checked');
+      greaseyeti.preserve_messages = $('#preserve_messages').is(':checked');
+      greaseyeti.my_color = $('#my_color').val();
+      greaseyeti.my_posts = $('#my_posts').is(':checked');
+      greaseyeti.my_topics = $('#my_topics').is(':checked');
+      greaseyeti.my_anon = $('#my_anon').is(':checked');
       greaseyeti.highlighted_users = [];
       greaseyeti.ignorated_users = [];
       greaseyeti.ignorated_kwords = [];
@@ -1148,8 +1105,7 @@ function ctrlKeyShortcuts() {
       default:
         return;
       }
-      var v = $(this)
-        .val();
+      var v = $(this).val();
       var selectStart = $(this)[0].selectionStart;
       var selectEnd = $(this)[0].selectionEnd;
       if (selectStart == selectEnd) {
@@ -1678,6 +1634,7 @@ function processPosts(page_number) {
     identifyOmittedQuotes($(this));
     checkWordLength($(this));
     imgurLinks($(this));
+	gfycatLinks($(this));
     if (chat_mode_enabled)
       chatModePost($(this));
     if (!window_has_focus && !initial_load)
@@ -1904,10 +1861,31 @@ function imgurLinks(message_container) {
       }
     });
 }
+// Convert gfycat links into embedded webms
+function gfycatLinks(message_container) {
+  if (!ch('gfycat_integration')) {
+    return;
+  }
+  findMaxImageWidth();
+  // Check if each link is a valid gfycat link
+  message_container.find('.message-body a').each(function () {
+      var anchor_link = $(this).attr('href');
+      var gfycat_regexp = /^https?:\/\/(gfycat\.com\/[a-zA-Z0-9]+)$/i;
+      var matches = anchor_link.match(gfycat_regexp);
+      // If so, separate into the "base" (which has the gfycat ID)
+      // Wrap the media in a div (so we can center it later) and create the corresponding element.
+	  findMaxImageWidth();
+      if (matches !== null) {
+        var gfycat_base = matches[1];
+        $(this).wrap('<div class="greaseyeti_imgur"></div>');
+        $(this).before('<video loop controls src="//giant.' + gfycat_base + '.webm" '+
+		'style="max-width:' + max_img_size + 'px; height:auto"></video><br>');
+      }
+    });
+}
 // Shorten a post vertically by removing the sig and removing unnecessary line breaks between adjacent elements
 function chatModePost(message_container) {
-  var message = message_container.find('.message')
-    .eq(0);
+  var message = message_container.find('.message').eq(0);
   message_contents = message.contents();
   // Check each node for a text one that contains the sig separator. Then remove everything after that.
   // Can't change the HTML directly because it fucks up LL images
@@ -2111,14 +2089,9 @@ function resizeImage(img_span, show_full_size) {
 }
 
 function findMaxImageWidth() {
-  max_img_size = Math.min(Math.min($(window)
-      .width(), $('div.body')
-      .width()) -
-    43 - $('.userpic')
-    .eq(0)
-    .width(), $('.message')
-    .eq(0)
-    .width()) - 5;
+  max_img_size = Math.min(Math.min($(window).width(), 
+    $('div.body').width()) - 43 - $('.userpic').eq(0).width(), 
+    $('.message').eq(0).width()) - 5; 
 }
 
 function openSpoilersOption() {
@@ -2273,8 +2246,7 @@ $(document)
         '<img src="http://i4.endoftheinter.net/i/n/f818de60196ad15c888b7f2140a77744/like.png" /> ' +
         my_username + ' likes ' + poster_username + '\'s post';
       // Quote the original and add the text.
-      var textarea = $('.quickpost-body textarea')
-        .val();
+      var textarea = $('.quickpost-body textarea').val();
       if (textarea.indexOf('---') == -1) {
         textarea += post_text;
       } else {
