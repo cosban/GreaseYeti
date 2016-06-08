@@ -16,6 +16,7 @@
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
 // @version 2.29
+// @connect cosban.net
 // @updateURL https://cosban.net/static/raw/greaseyeti.user.js
 // @downloadURL https://cosban.net/static/raw/greaseyeti.user.js
 // ==/UserScript==
