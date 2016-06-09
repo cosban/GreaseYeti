@@ -329,28 +329,28 @@ if (url.indexOf('loser.php?settings') != -1) {
             }
         });
     $('#add_highlight').click(function () {
-        $(this).parent().parent().before(`<tr class = "huser">
-          <td>  <input type = "text" class = "highlight_username"/>  </td>
-          <td>  <input type = "text" class = "highlight_color"/>  </td>
-          <td>  <input type = "checkbox" class = "highlight_posts"/>  </td>
-          <td>  <input type = "checkbox" class = "highlight_topics"/>  </td>
-          <td>  &nbsp;  </td>  <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
+        $(this).parent().parent().before(`<tr class="huser">
+          <td>  <input type="text" class="highlight_username"/>  </td>
+          <td>  <input type="text" class="highlight_color"/>  </td>
+          <td>  <input type="checkbox" class="highlight_posts"/>  </td>
+          <td>  <input type="checkbox" class="highlight_topics"/>  </td>
+          <td>  &nbsp;  </td>  <td class="highlight_remove">  <a style="cursor: pointer;color: #a33;">✖</a>  </td>
           </tr>  `);
     });
     $('#add_ignorate').click(function () {
-        $(this).parent().parent().before(`<tr class = "iguser">
-          <td>  <input type = "text" class = "ignorate_username"/>  </td>
-          <td>  <input type = "text" class = "ignorate_userid"/>  </td>
-          <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
+        $(this).parent().parent().before(`<tr class="iguser">
+          <td>  <input type="text" class="ignorate_username"/>  </td>
+          <td>  <input type="text" class="ignorate_userid"/>  </td>
+          <td class="highlight_remove">  <a style="cursor: pointer;color: #a33;">✖</a>  </td>
           </tr>  `);
     });
     $('#add_kw_ignorate').click(function () {
-        $(this).parent().parent().before(`<tr class = "igkword">
-          <td>  <input type = "text" class = "ignorate_kword"/>  </td>
-          <td>  <input type = "checkbox" class = "kw_ignorate_regex"/>  </td>
-          <td>  <input type = "checkbox" class = "kw_ignorate_posts"/>  </td>
-          <td>  <input type = "checkbox" class = "kw_ignorate_topics"/>  </td>
-          <td class = "highlight_remove">  <a style = "color: #a33"> X </a>  </td>
+        $(this).parent().parent().before(`<tr class="igkword">
+          <td>  <input type="text" class="ignorate_kword"/>  </td>
+          <td>  <input type="checkbox" class="kw_ignorate_regex"/>  </td>
+          <td>  <input type="checkbox" class="kw_ignorate_posts"/>  </td>
+          <td>  <input type="checkbox" class="kw_ignorate_topics"/>  </td>
+          <td class="highlight_remove">  <a style="cursor: pointer;color: #a33;">✖</a>  </td>
         </tr>  `);
     });
     $('.highlight_color, #my_color').each(function () {
@@ -1004,12 +1004,12 @@ function versionCheck() {
                     if (result.version > version_num) {
                         $('table.greaseyeti_settings')
                             .prepend(`<tr>
-				<td style = "background: #ff8888; text-align: center; color: black; padding: 5px 0">
+				<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">
 					<strong> A new version of GreaseYETI is out. </strong>  <br/>
 					<strong> Your version :  </strong>  ` + version_num.toFixed(2)
                                 + `<strong> Current version :  </strong>  ` + result.version + `<br/>  `
                                 + result.changes + `<br/>
-					<a href = "https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  </td>
+					<a href="https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  </td>
 					</tr>  `);
                     } else {
                         $('table.greaseyeti_settings')
@@ -1018,7 +1018,7 @@ function versionCheck() {
                                 + '</td></tr>');
                     }
                 } else if (result.version > version_num) {
-                    $('body').prepend(`<div style = "position: absolute;
+                    $('body').prepend(`<div style="position: absolute;
 													   top: 0;
 													   left: 0;
 													   right: 0;
@@ -1028,9 +1028,9 @@ function versionCheck() {
 													   color: black;
 													   padding: 5px 0">
 				<strong> A new version of GreaseYETI is out </strong>  |
-				<a href = "https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  |
-				<a href = "//endoftheinter.net/loser.php?settings"> View Changes </a>  |
-				<a style = "cursor: pointer; text-decoration: underline" id = "remove_bar_yeti"> Remove this damn bar </a>
+				<a href="https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  |
+				<a href="//endoftheinter.net/loser.php?settings"> View Changes </a>  |
+				<a style="cursor: pointer; text-decoration: underline" id="remove_bar_yeti"> Remove this damn bar </a>
 				</div>  `);
                     $('#remove_bar_yeti').click(function () {
                         $(this).parent().remove();
@@ -1065,8 +1065,8 @@ function processTopicList() {
                     $(this).remove();
                     return;
                 } else {
-                    cells.eq(3).append(' <a class="greaseyeti_nounderline_link rtopic ' + topic_id
-                        + '" title="Remove topic" style="color: #a33">X</a>');
+                    cells.eq(3).append(' <a class="greaseyeti_nounderline_link rtopic' + topic_id
+                        + '" title="Remove topic" style="cursor: pointer;color: #a33;">✖</a>');
                 }
             }
             // Highlighted topics: highlight if necessary and add the link
@@ -1075,7 +1075,7 @@ function processTopicList() {
                     cells.css('background-color', ch('highlight_color', '#5cc'));
                 }
                 cells.eq(3).append(' <a class="greaseyeti_nounderline_link htopic ' + topic_id
-                    + '" title="Highlight topic" style="color: #3a3">H</a>');
+                    + '" title="Highlight topic" >H</a>');
             }
             // Disabled topics. Add to Unread topics if not disabled
             if (ch('load_unread')) {
@@ -1742,7 +1742,7 @@ function chatModeOption() {
 function enableChatMode() {
     chat_mode_enabled = true;
     // Add CSS rules
-    $('body').before('<style type = "text/css">	'
+    $('body').before('<style type="text/css">	'
         + 'body.chat_mode td.userpic * {height : 45px;width : auto;}'
         + 'body.chat_mode td.userpic center {display : none}'
         + 'body.chat_mode div.body> small {display : none}'
@@ -1844,7 +1844,7 @@ function populateHighlightedUsers() {
                 + '" /></td><td><input type="text" class="highlight_color" value="' + users[i].color
                 + '" /></td><td><input type="checkbox" class="highlight_posts"' + checkForHighlight(users[i], 'posts')
                 + ' /></td><td><input type="checkbox" class="highlight_topics"' + checkForHighlight(users[i], 'topics')
-                + ' /></td><td>&nbsp;</td><td class="highlight_remove"><a style="color: #a33">X</a></td></tr>';
+                + ' /></td><td>&nbsp;</td><td class="highlight_remove"><a style="cursor: pointer;color: #a33;">✖</a></td></tr>';
         }
     }
     return html;
@@ -1857,7 +1857,7 @@ function populateIgnoratedUsers() {
         for (var i = 0; i < users.length; i++) {
             html += '<tr class="iguser"><td><input type="text" class="ignorate_username" value="' + users[i].username
                 + '" /></td><td><input type="text" class="ignorate_userid" value="' + users[i].userid
-                + '" /></td><td class="ignorate_remove"><a style="color: #a33">X</a></td></tr>';
+                + '" /></td><td class="ignorate_remove"><a style="cursor: pointer;color: #a33;">✖</a></td></tr>';
         }
     }
     return html;
@@ -1874,7 +1874,7 @@ function populateIgnoratedKWords() {
                 + '" /></td><td><input type="checkbox" class="kw_ignorate_posts"' + checkforIgnorated(words[i], 'posts')
                 + ' /></td><td><input type="checkbox" class="kw_ignorate_topics"'
                 + checkforIgnorated(words[i], 'topics')
-                + ' /></td><td class="ignorate_remove"><a style="color: #a33">X</a></td></tr>';
+                + ' /></td><td class="ignorate_remove"><a style="cursor: pointer;color: #a33;">✖</a></td></tr>';
         }
     }
     return html;
