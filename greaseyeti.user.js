@@ -15,15 +15,15 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
+// @version 2.29
 // @connect cosban.net
-// @version 2.28.1
 // @updateURL https://cosban.net/static/raw/greaseyeti.user.js
 // @downloadURL https://cosban.net/static/raw/greaseyeti.user.js
 // ==/UserScript==
 
 var start = new Date()
   .getTime();
-var version_num = 2.28.1;
+var version_num = 2.29;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' ||
   typeof GM_xmlhttpRequest != 'function') {
@@ -863,6 +863,11 @@ function applyStyling() {
       'text-decoration': 'underline'
     });
   $('.greaseyeti_imgur')
+    .css({
+      'text-align': 'center',
+      'display': 'inline-block'
+    });
+  $('.greaseyeti_gfycat')
     .css({
       'text-align': 'center',
       'display': 'inline-block'
@@ -1885,9 +1890,9 @@ function gfycatLinks(message_container) {
 		  onload: function (responseDetails) {
 			  if (responseDetails.status == 200) {
 				  var dl = JSON.parse(responseDetails.responseText);
-				  msg_container.wrap('<div class="greaseyeti_imgur"></div>');
-				  msg_container.before('<video loop controls src="' + dl.gfyItem.webmUrl + 
-				  '" style="max-width:' + max_img_size + 'px; height:auto"></video><br>');
+				  msg_container.wrap('<div class="greaseyeti_gfycat" style="display:inline-block; text-align:center"></div>');
+				  msg_container.before('<video loop controls><source src="' + dl.gfyItem.webmUrl + 
+				  '" type="video/webm"></video><br>');
 			  }
 		  }
 	  });
