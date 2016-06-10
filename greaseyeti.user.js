@@ -15,15 +15,15 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.29
-// @connect cosban.net
-// @updateURL https://cosban.net/static/raw/greaseyeti.user.js
-// @downloadURL https://cosban.net/static/raw/greaseyeti.user.js
+// @version 2.31
+// @connect github.com
+// @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
+// @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // ==/UserScript==
 
 var start = new Date()
     .getTime();
-var version_num = 2.29;
+var version_num = 2.31;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' || typeof GM_xmlhttpRequest != 'function') {
     alert('Error: You need GM_setValue, GM_getValue, and GM_xmlhttpRequest functions to use GreaseYETI.');
@@ -153,7 +153,7 @@ if (url.indexOf('loser.php?settings') != -1) {
         + '<label for ="stealth_logout"> Ask me to confirm logging out </label>'
         + '</td></tr>'
         + '<tr><td><input type="checkbox" id="load_omitted" ' + settingCheck('load_omitted') + '/>'
-        + 'label for ="load_omitted"> Load[quoted text omitted]by clicking </label>'
+        + '<label for ="load_omitted"> Load[quoted text omitted]by clicking </label>'
         + '<p class="desc"> Clicking on "[quoted text omitted]" will load the actual message and insert it. </p>'
         + '</td></tr>'
         + '<tr><td><input type="checkbox" id="word_break" ' + settingCheck('word_break') + '/>'
@@ -993,7 +993,7 @@ function versionCheck() {
         return;
     }
     GM_xmlhttpRequest({
-        method: 'GET', url: 'https://cosban.net/static/raw/greaseyeti.json', headers: {
+        method: 'GET', url: 'https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.json', headers: {
             'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
             'Accept': 'application/atom+xml,application/xml,text/xml',
             'Cache-Control': 'no-store',
@@ -1009,7 +1009,7 @@ function versionCheck() {
 					<strong> Your version :  </strong>  ` + version_num.toFixed(2)
                                 + `<strong> Current version :  </strong>  ` + result.version + `<br/>  `
                                 + result.changes + `<br/>
-					<a href="https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  </td>
+					<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a>  </td>
 					</tr>  `);
                     } else {
                         $('table.greaseyeti_settings')
@@ -1028,7 +1028,7 @@ function versionCheck() {
 													   color: black;
 													   padding: 5px 0">
 				<strong> A new version of GreaseYETI is out </strong>  |
-				<a href="https://cosban.net/static/raw/greaseyeti.user.js"> Update </a>  |
+				<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a>  |
 				<a href="//endoftheinter.net/loser.php?settings"> View Changes </a>  |
 				<a style="cursor: pointer; text-decoration: underline" id="remove_bar_yeti"> Remove this damn bar </a>
 				</div>  `);
