@@ -1,4 +1,4 @@
 {
-	"version": 2.31,
-	"changes": "Switches update hosting to github"
+	"version": 2.32,
+	"changes": "Fix ability to remove topics"
 }

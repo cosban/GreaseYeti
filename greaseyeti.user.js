@@ -15,14 +15,14 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.31
+// @version 2.32
 // @connect github.com
 // @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // ==/UserScript==
 
 var start = new Date().getTime();
-var version_num = 2.31;
+var version_num = 2.32;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' || typeof GM_xmlhttpRequest != 'function') {
     alert('Error: You need GM_setValue, GM_getValue, and GM_xmlhttpRequest functions to use GreaseYETI.');
@@ -1057,8 +1057,8 @@ function processTopicList() {
                     $(this).remove();
                     return;
                 } else {
-                    cells.eq(3).append(' <a class="greaseyeti_nounderline_link rtopic' + topic_id
-                        + '" title="Remove topic" style="cursor: pointer;color: #a33;">✖</a>');
+                    cells.eq(3).append(' <a class="greaseyeti_nounderline_link rtopic ' + topic_id
+                        + '" title="Remove topic" style="cursor:pointer;color:#a33;">✖</a>');
                 }
             }
             // Highlighted topics: highlight if necessary and add the link
@@ -1891,8 +1891,7 @@ function findWhoPostedMessage(message_top_html) {
 function findWhoPostedUserId(message_top_html) {
     var regexp1 = /^(.*)From:(\<\/b\>)? (\<a href\="([^\d]+))?/i;
     var regexp2 = /(\"\>[a-z\d ]+)(\<\/a\>)?( \(.+\))? \| (.+)$/i;
-    var posted_userid = message_top_html.replace(regexp1, '')
-                                        .replace(regexp2, '');
+    var posted_userid = message_top_html.replace(regexp1, '').replace(regexp2, '');
     return posted_userid;
 }
 
@@ -1925,8 +1924,7 @@ function isKWordIgnorated(s, where) {
         if (where === 'topics' && kword.topics || where === 'posts' && kword.posts) {
             if (kword.is_regex && s.match(kword.word)) {
                 return true;
-            } else if (s.toUpperCase()
-                        .indexOf(kword.word.toUpperCase()) >= 0) {
+            } else if (s.toUpperCase().indexOf(kword.word.toUpperCase()) >= 0) {
                 return true;
             }
         }
