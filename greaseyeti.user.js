@@ -21,8 +21,7 @@
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // ==/UserScript==
 
-var start = new Date()
-    .getTime();
+var start = new Date().getTime();
 var version_num = 2.31;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' || typeof GM_xmlhttpRequest != 'function') {
@@ -45,8 +44,10 @@ var load_gif = 'data:image/gif;base64,R0lGODlhEAAQAPIAAP///2Zm/9ra/o2N/mZm/6Cg/r
 var window_has_focus = false, currently_scrolling = false, uses_thumbnails = true, max_img_size = -1, shift_key = false, ctrl_key = false, highlighted_users = null, highlighted_colors = null, form_submitted = false, page_change = false, chat_mode_enabled = false;
 // GRAB THE USER'S SETTINGS
 var greaseyeti = JSON.parse(GM_getValue('greaseyeti', '-1'));
-// if (greaseyeti == -1 && url.indexOf('loser.php?settings') == -1) document.location =
-// '//endoftheinter.net/loser.php?settings'; First, force HTTPS if enabled. There's no point loading the rest.
+if (greaseyeti == -1 && url.indexOf('loser.php?settings') == -1) {
+    document.location = '//endoftheinter.net/loser.php?settings';
+}
+// First, force HTTPS if enabled. There's no point loading the rest.
 forceHttps();
 // SETTINGS PAGE
 if (url.indexOf('loser.php?settings') != -1) {
@@ -54,8 +55,7 @@ if (url.indexOf('loser.php?settings') != -1) {
         greaseyeti = {};
     }
     // DISPLAY SETTINGS - create some HTML.
-    $('h1')
-        .html('GreaseYETI Settings');
+    $('h1').html('GreaseYETI Settings');
     document.title = 'End of the Internet - GreaseYETI Settings';
     // there was honestly no good way to make this friendly.
     // this edit makes it so changes create smaller diffs.
@@ -253,7 +253,7 @@ if (url.indexOf('loser.php?settings') != -1) {
         + '<tr><th>Highlighting</th></tr>'
         + '<tr><td><p class="desc">You can highlight posts and topics from specific users. '
         + 'Click " Add User " to create a new row, then fill in the username and a '
-        + '<a href=" http : //www.colorpicker.com/" target="_blank">CSS color</a>. '
+        + '<a href="http://www.colorpicker.com/" target="_blank">CSS color</a>. '
         + 'Then select whether you would like to highlight posts and / or topics. </p>'
         + '<p class="desc"> Your username is automatically added to the table to highlight your own content. '
         + 'You can also highlight your posts in[Anonymous]topics. </p>'
@@ -263,9 +263,9 @@ if (url.indexOf('loser.php?settings') != -1) {
         + '<td style="min-width: 50%"> Color </td>'
         + '<td> Posts </td><td> Topics </td>'
         + '<td> [Anonymous] </td><td> Remove </td>'
-        + '</tr>  '
+        + '</tr>'
         + populateHighlightedUsers()
-        + '<tr><td colspan="6"> <button id="add_highlight"> Add User </button>  </td></tr>'
+        + '<tr><td colspan="6"><button id="add_highlight">Add User</button></td></tr>'
         + '</table>'
         + '</td></tr>'
         + '<!--Ignorator-->'
@@ -320,38 +320,37 @@ if (url.indexOf('loser.php?settings') != -1) {
         $('#custom_css_rules').css('display', 'block');
     }
     // Set up interactions with the page.
-    $('#custom_css')
-        .change(function () {
-            if ($(this).is(':checked')) {
-                $('#custom_css_rules').css('display', 'block');
-            } else {
-                $('#custom_css_rules').hide();
-            }
-        });
+    $('#custom_css').change(function () {
+        if ($(this).is(':checked')) {
+            $('#custom_css_rules').css('display', 'block');
+        } else {
+            $('#custom_css_rules').hide();
+        }
+    });
     $('#add_highlight').click(function () {
-        $(this).parent().parent().before(`<tr class="huser">
-          <td>  <input type="text" class="highlight_username"/>  </td>
-          <td>  <input type="text" class="highlight_color"/>  </td>
-          <td>  <input type="checkbox" class="highlight_posts"/>  </td>
-          <td>  <input type="checkbox" class="highlight_topics"/>  </td>
-          <td>  &nbsp;  </td>  <td class="highlight_remove">  <a style="cursor: pointer;color: #a33;">✖</a>  </td>
-          </tr>  `);
+        $(this).parent().parent().before('<tr class="huser">'
+            + '<td><input type="text" class="highlight_username"/></td>'
+            + '<td><input type="text" class="highlight_color"/></td>'
+            + '<td><input type="checkbox" class="highlight_posts"/></td>'
+            + '<td><input type="checkbox" class="highlight_topics"/></td>'
+            + '<td>&nbsp;</td><td class="highlight_remove"><a style="cursor: pointer;color: #a33;">✖</a></td>'
+            + '</tr>');
     });
     $('#add_ignorate').click(function () {
-        $(this).parent().parent().before(`<tr class="iguser">
-          <td>  <input type="text" class="ignorate_username"/>  </td>
-          <td>  <input type="text" class="ignorate_userid"/>  </td>
-          <td class="highlight_remove">  <a style="cursor: pointer;color: #a33;">✖</a>  </td>
-          </tr>  `);
+        $(this).parent().parent().before('<tr class="iguser">'
+            + '<td><input type="text" class="ignorate_username"/></td>'
+            + '<td><input type="text" class="ignorate_userid"/></td>'
+            + '<td class="highlight_remove"><a style="cursor: pointer;color: #a33;">✖</a></td> '
+            + '</tr>');
     });
     $('#add_kw_ignorate').click(function () {
-        $(this).parent().parent().before(`<tr class="igkword">
-          <td>  <input type="text" class="ignorate_kword"/>  </td>
-          <td>  <input type="checkbox" class="kw_ignorate_regex"/>  </td>
-          <td>  <input type="checkbox" class="kw_ignorate_posts"/>  </td>
-          <td>  <input type="checkbox" class="kw_ignorate_topics"/>  </td>
-          <td class="highlight_remove">  <a style="cursor: pointer;color: #a33;">✖</a>  </td>
-        </tr>  `);
+        $(this).parent().parent().before('<tr class="igkword">'
+            + '<td><input type="text" class="ignorate_kword"/></td>'
+            + '<td><input type="checkbox" class="kw_ignorate_regex"/></td>'
+            + '<td><input type="checkbox" class="kw_ignorate_posts"/></td>'
+            + '<td><input type="checkbox" class="kw_ignorate_topics"/></td>'
+            + '<td class="highlight_remove"><a style="cursor: pointer;color: #a33;">✖</a></td>'
+            + '</tr>');
     });
     $('.highlight_color, #my_color').each(function () {
         $(this).parent().parent().children().css('background-color', $(this).val());
@@ -1003,14 +1002,14 @@ function versionCheck() {
                 if (settings_page) {
                     if (result.version > version_num) {
                         $('table.greaseyeti_settings')
-                            .prepend(`<tr>
-				<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">
-					<strong> A new version of GreaseYETI is out. </strong>  <br/>
-					<strong> Your version :  </strong>  ` + version_num.toFixed(2)
-                                + `<strong> Current version :  </strong>  ` + result.version + `<br/>  `
-                                + result.changes + `<br/>
-					<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a>  </td>
-					</tr>  `);
+                            .prepend('<tr>'
+                                + '<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">'
+                                + '<strong> A new version of GreaseYETI is out. </strong><br/>'
+                                + '<strong> Your version :  </strong>' + version_num.toFixed(2)
+                                + '<strong> Current version :  </strong>' + result.version + '<br/>' + result.changes
+                                + '<br/>'
+                                + '<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a></td>'
+                                + '</tr>');
                     } else {
                         $('table.greaseyeti_settings')
                             .prepend('<tr><td style="background:#88ff88;font-weight:bold; text-align: center;color:black;padding:5px0">'
@@ -1018,20 +1017,13 @@ function versionCheck() {
                                 + '</td></tr>');
                     }
                 } else if (result.version > version_num) {
-                    $('body').prepend(`<div style="position: absolute;
-													   top: 0;
-													   left: 0;
-													   right: 0;
-													   background: #ff8888;
-													   font-weight: bold;
-													   text-align: center;
-													   color: black;
-													   padding: 5px 0">
-				<strong> A new version of GreaseYETI is out </strong>  |
-				<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a>  |
-				<a href="//endoftheinter.net/loser.php?settings"> View Changes </a>  |
-				<a style="cursor: pointer; text-decoration: underline" id="remove_bar_yeti"> Remove this damn bar </a>
-				</div>  `);
+                    $('body')
+                        .prepend('<div style="position: absolute;top: 0;left:0;right:0;background: #ff8888;font-weight: bold;text-align: center;color: black;padding: 5px 0">'
+                            + '<strong> A new version of GreaseYETI is out </strong> | '
+                            + '<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a> | '
+                            + '<a href="//endoftheinter.net/loser.php?settings"> View Changes </a> |'
+                            + '<a style="cursor: pointer; text-decoration: underline" id="remove_bar_yeti"> Remove this damn bar </a>'
+                            + '</div>');
                     $('#remove_bar_yeti').click(function () {
                         $(this).parent().remove();
                     });
@@ -1831,7 +1823,7 @@ $(document).on('click', '.like_post, .repeat_post', function () {
 function populateHighlightedUsers() {
     // First add yourself
     var html = '<tr><td>' + getMyUsername()
-        + '</td><td><input type="text" id="my_color" value="' + ch('my_color', '#c3c4c9;')
+        + '</td><td><input type="text" id="my_color" value="' + ch('my_color', '#c3c4c9')
         + '" /></td><td><input type="checkbox" id="my_posts"' + settingCheck('my_posts')
         + '" /></td><td><input type="checkbox" id="my_topics"' + settingCheck('my_topics')
         + '" /></td><td><input type="checkbox" id="my_anon"' + settingCheck('my_anon')
@@ -1881,11 +1873,11 @@ function populateIgnoratedKWords() {
 }
 
 function checkForHighlight(user, where) {
-    return (user.hasOwnProperty(where) && user[where] === true ? ' checked="checked"' : '');
+    return (user.hasOwnProperty(where) && user[where] === true ? 'checked="checked"' : '');
 }
 
 function checkforIgnorated(kword, where) {
-    return (kword.hasOwnProperty(where) && kword[where] === true ? ' checked="checked"' : '');
+    return (kword.hasOwnProperty(where) && kword[where] === true ? 'checked="checked"' : '');
 }
 
 function findWhoPostedMessage(message_top_html) {
