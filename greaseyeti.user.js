@@ -222,7 +222,7 @@ if (url.indexOf('loser.php?settings') != -1) {
         + '<label for="lastfm_integration">Integrate Last.fm into your posts</label>'
         + '<p class="desc">Allows you to integrate Last.fm into your signature/posts. '
         + 'When submitting a post, %TRACK% will be replaced by " ARTIST ? TRACK ", and %TIME% will let you know when the track was played.'
-        + '<p><input type="checkbox" id="lastfm_username " size="25" value=" ' + ch('lastfm_username', '') + '" />'
+        + '<p><input type="text" id="lastfm_username" size="25" value="' + ch('lastfm_username', '') + '" />'
         + '<label for="lastfm_username">Last.fm Username</label><br />'
         + '<input type="text" id="lastfm_freq " size="5" value=" ' + ch('lastfm_freq', '') + '" />'
         + '<label for="lastfm_freq">Update Frequency (minutes)</label></p>'
