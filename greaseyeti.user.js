@@ -15,14 +15,14 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.32
+// @version 2.33
 // @connect github.com
 // @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // ==/UserScript==
 
 var start = new Date().getTime();
-var version_num = 2.32;
+var version_num = 2.33;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' || typeof GM_xmlhttpRequest != 'function') {
     alert('Error: You need GM_setValue, GM_getValue, and GM_xmlhttpRequest functions to use GreaseYETI.');
@@ -932,7 +932,9 @@ function checkLastFM() {
     if (start / 1000 > (ch('lastfm_lastcheck', 0) + ch('lastfm_freq') * 60)) {
         GM_xmlhttpRequest({
             method: 'GET',
-            url: 'http://ws.audioscrobbler.com/1.0/user/' + ch('lastfm_username') + '/recenttracks.rss',
+            url: 'http://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks' +
+            	'&api_key=f3abaf953cc7f1695f90ec70752f80ef&format=json&limit=1&user=' +
+            	ch('lastfm_username'),
             headers: {
                 'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
                 'Accept': 'application/atom+xml,application/xml,text/xml',
@@ -940,11 +942,11 @@ function checkLastFM() {
             },
             onload: function (responseDetails) {
                 if (responseDetails.status == 200) {
-                    var parser = new DOMParser();
-                    var xmlDoc = parser.parseFromString(responseDetails.responseText, 'text/xml');
-                    greaseyeti.lastfm_track = xmlDoc.getElementsByTagName('title')[1].childNodes[0].nodeValue;
+                	var mostRecentTrack = JSON.parse(responseDetails.responseText).recenttracks.track[0];
+                	greaseyeti.lastfm_track = mostRecentTrack.artist["#text"] + ' – ' + mostRecentTrack.name;
+                	greaseyeti.lastfm_timestamp = mostRecentTrack.date || 'Right Now';
+
                     greaseyeti.lastfm_lastcheck = Math.round(start / 1000);
-                    greaseyeti.lastfm_timestamp = xmlDoc.getElementsByTagName('pubDate')[1].childNodes[0].nodeValue;
                     saveGreaseyeti(true);
                 }
             }
@@ -1929,7 +1931,7 @@ function findWhoPostedUserId(message_top_html) {
 }
 
 function isIgnorated(user, userid) {
-    var users = ch('ignorated_users', null);
+    var users = ch('ignorated_users', []);
     for (var i = 0; i < users.length; i++) {
         if (users[i].username === user || users[i].userid === userid) {
             // update userid to the current poster id because it was blank
@@ -1951,7 +1953,7 @@ function isIgnorated(user, userid) {
 }
 
 function isKWordIgnorated(s, where) {
-    var words = ch('ignorated_kwords', null);
+    var words = ch('ignorated_kwords', []);
     for (var i = 0; i < words.length; i++) {
         var kword = words[i];
         if (where === 'topics' && kword.topics || where === 'posts' && kword.posts) {
