@@ -44,6 +44,7 @@ var load_gif = 'data:image/gif;base64,R0lGODlhEAAQAPIAAP///2Zm/9ra/o2N/mZm/6Cg/r
 var window_has_focus = false, currently_scrolling = false, uses_thumbnails = true, max_img_size = -1, shift_key = false, ctrl_key = false, highlighted_users = null, highlighted_colors = null, form_submitted = false, page_change = false, chat_mode_enabled = false;
 // GRAB THE USER'S SETTINGS
 var greaseyeti = JSON.parse(GM_getValue('greaseyeti', '-1'));
+
 if (greaseyeti == -1 && url.indexOf('loser.php?settings') == -1) {
     document.location = '//endoftheinter.net/loser.php?settings';
 }
@@ -472,6 +473,39 @@ if (document.location.href.indexOf('.net/topics/') != -1) {
     if (ch('autoload') && next_page !== false) {
         document.addEventListener('scroll', topicListScrollCheck, true);
     }
+    // new front page garbage
+} else if(document.location.href.indexOf('.net/main.php') != -1) {
+    // boring jquery stuff
+    $.fn.onAvailable = function (fn) {
+        var self = this;
+        var timer;
+        if (this.length > 0) {
+            fn.call(this);
+        } else {
+            timer = setInterval(function () {
+                if ($(self.selector).length > 0) {
+                    fn.call($(self.selector));
+                    clearInterval(timer);
+                }
+            }, 50);
+        }
+    };
+    // wait for it to successfully load (because fuck melon wolf)
+    $('#totm > h2').onAvailable(function(){
+        var unread_topics = [], next_page;
+        // Mark the next page URL
+        var next_page_link = $('div.infobar').eq(-2).find('a');
+        if (next_page_link.length > 0) {
+            next_page = next_page_link.eq(0).attr('href');
+        } else {
+            next_page = false;
+        }
+        createLoadUnreadLink();
+        processTopicList();
+        if (ch('autoload') && next_page !== false) {
+            document.addEventListener('scroll', topicListScrollCheck, true);
+        }
+    });
     // *****************
     // * MESSAGE LISTS *
     // *****************
@@ -1883,8 +1917,7 @@ function checkforIgnorated(kword, where) {
 function findWhoPostedMessage(message_top_html) {
     var regexp1 = /^(.*)From:(\<\/b\>)? (\<a href\="([^"]+)"\>)?/i;
     var regexp2 = /(\<\/a\>)?( \(.+\))? \| (.+)$/i;
-    var poster_username = message_top_html.replace(regexp1, '')
-                                          .replace(regexp2, '');
+    var poster_username = message_top_html.replace(regexp1, '').replace(regexp2, '');
     return poster_username;
 }
 
