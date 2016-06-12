@@ -1513,7 +1513,7 @@ function imgurLinks(message_container) {
             $(this).wrap('<div class="greaseyeti_imgur"></div>');
             if (file_extension === 'webm' || file_extension === 'gifv') {
                 $(this)
-                    .before('<video loop controls><source type="video/webm" src="' + imgur_base
+                    .before('<video loop autoplay><source type="video/webm" src="' + imgur_base
                         + '.webm"></source><source type="video/mp4" src="' + imgur_base
                         + '.mp4"></source></video><br>');
             } else if (file_extension === 'gif') {
