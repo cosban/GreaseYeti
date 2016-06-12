@@ -1542,7 +1542,7 @@ function gfycatLinks(message_container) {
                     if (responseDetails.status == 200) {
                         var dl = JSON.parse(responseDetails.responseText);
                         msg_container.wrap('<div class="greaseyeti_gfycat" style="display:inline-block; text-align:center"></div>');
-                        msg_container.before('<video loop controls><source src="' + dl.gfyItem.webmUrl
+                        msg_container.before('<video loop autoplay><source src="' + dl.gfyItem.webmUrl
                             + '" type="video/webm"></video><br>');
                     }
                 }
