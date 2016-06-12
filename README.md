@@ -28,6 +28,8 @@ This fork of GreaseYETI (updated from the 2.23 source by headbanger at [xatal.co
 - Hide posts and topics from annoying users
 - Automatically update to ignore users if they change their username
 - Hide portions of posts which quote ignorated users
+- Ignore posts containing certain regex/key words
+- Various UI options
 
 ## Installation
 1. Click the "Get it here" link above.
@@ -35,9 +37,9 @@ This fork of GreaseYETI (updated from the 2.23 source by headbanger at [xatal.co
 3. Pick and choose how you want shit to be
 4. Don't forget to save!
 
-The latest STABLE version of this fork can always be found at [cosban.net](https://cosban.net/static/raw/greaseyeti.user.js)
+The latest STABLE version of this fork can always be found on the master branch!
 
-GreaseYETI adds a link in your user profile to your settings page.
+GreaseYETI adds a link in your user profile to your settings page. (see installation #2)
 
 ## Important Notes
 - This is a long script that does a bunch of shit. It's going to be buggy, but if you let me know in this topic or over PM about some problems, I can try to help you fix them and release bug fixed versions.
