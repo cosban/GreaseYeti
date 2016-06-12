@@ -224,7 +224,7 @@ if (url.indexOf('loser.php?settings') != -1) {
         + 'When submitting a post, %TRACK% will be replaced by " ARTIST ? TRACK ", and %TIME% will let you know when the track was played.'
         + '<p><input type="text" id="lastfm_username" size="25" value="' + ch('lastfm_username', '') + '" />'
         + '<label for="lastfm_username">Last.fm Username</label><br />'
-        + '<input type="text" id="lastfm_freq " size="5" value=" ' + ch('lastfm_freq', '') + '" />'
+        + '<input type="text" id="lastfm_freq" size="5" value=" ' + ch('lastfm_freq', '') + '" />'
         + '<label for="lastfm_freq">Update Frequency (minutes)</label></p>'
         + '<p class="desc">After this many minutes, your Last.fm data will be refreshed.</p>'
         + '</td></tr>'
