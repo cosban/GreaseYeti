@@ -15,14 +15,13 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.33
+// @version 2.34
 // @connect github.com
 // @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // ==/UserScript==
 
 var start = new Date().getTime();
-var version_num = 2.33;
 this.$ = this.jQuery = jQuery.noConflict(true);
 if (typeof GM_setValue != 'function' || typeof GM_getValue != 'function' || typeof GM_xmlhttpRequest != 'function') {
     alert('Error: You need GM_setValue, GM_getValue, and GM_xmlhttpRequest functions to use GreaseYETI.');
@@ -42,10 +41,13 @@ var load_gif = 'data:image/gif;base64,R0lGODlhEAAQAPIAAP///2Zm/9ra/o2N/mZm/6Cg/r
     + 'CRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAA'
     + 'AAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnl' + 'sRkAAAOwAAAAAAAAAAAA==';
 var window_has_focus = false, currently_scrolling = false, uses_thumbnails = true, max_img_size = -1, shift_key = false, ctrl_key = false, highlighted_users = null, highlighted_colors = null, form_submitted = false, page_change = false, chat_mode_enabled = false;
-// GRAB THE USER'S SETTINGS
-var greaseyeti = JSON.parse(GM_getValue('greaseyeti', '-1'));
 
+// GRAB THE USER'S SETTINGS
+// If they don't have any, send them to the settings page on the first try.
+var greaseyeti = JSON.parse(GM_getValue('greaseyeti', '-1'));
 if (greaseyeti == -1 && url.indexOf('loser.php?settings') == -1) {
+    greaseyeti.firstRun = true;
+    saveGreaseyeti(true);
     document.location = '//endoftheinter.net/loser.php?settings';
 }
 // First, force HTTPS if enabled. There's no point loading the rest.
@@ -585,7 +587,6 @@ if (document.location.href.indexOf('.net/topics/') != -1) {
 
     document.addEventListener('mousemove', detectMovement, true);
     document.addEventListener('keypress', detectMovement, true);
-    window.addEventListener('resize', findMaxImageWidth, true);
 }
 // EVERYWHERE
 document.addEventListener('keydown', ctrlDetect, true);
@@ -655,10 +656,12 @@ function ctrlDetect(e) {
 }
 
 function applyStyling() {
-    $('.greaseyeti_nounderline_link').css('cursor', 'pointer');
-    $('.greaseyeti_link').css({'cursor': 'pointer', 'text-decoration': 'underline'});
-    $('.greaseyeti_imgur').css({'text-align': 'center', 'display': 'inline-block'});
-    $('.greaseyeti_gfycat').css({'text-align': 'center', 'display': 'inline-block'});
+    // Inject broad styles as <style> tag (so the elements don't have to exist beforehand)
+    var css = '.greaseyeti_nounderline_link { cursor: pointer; } ' +
+        '.greaseyeti_link { cursor: pointer; text-decoration: underline; } ' +
+        '.greaseyeti_imgur, .greaseyeti_gfycat { text-align: center; display: inline-block; } ' +
+        '.greaseyeti_resized_image { max-width: 100%; }';
+    $('head').append('<style type="text/css">' + css + '</style>');
 }
 
 function customTitles() {
@@ -933,8 +936,8 @@ function checkLastFM() {
         GM_xmlhttpRequest({
             method: 'GET',
             url: 'http://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks' +
-            	'&api_key=f3abaf953cc7f1695f90ec70752f80ef&format=json&limit=1&user=' +
-            	ch('lastfm_username'),
+                '&api_key=f3abaf953cc7f1695f90ec70752f80ef&format=json&limit=1&user=' +
+                ch('lastfm_username'),
             headers: {
                 'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
                 'Accept': 'application/atom+xml,application/xml,text/xml',
@@ -942,9 +945,9 @@ function checkLastFM() {
             },
             onload: function (responseDetails) {
                 if (responseDetails.status == 200) {
-                	var mostRecentTrack = JSON.parse(responseDetails.responseText).recenttracks.track[0];
-                	greaseyeti.lastfm_track = mostRecentTrack.artist["#text"] + ' – ' + mostRecentTrack.name;
-                	greaseyeti.lastfm_timestamp = mostRecentTrack.date || 'Right Now';
+                    var mostRecentTrack = JSON.parse(responseDetails.responseText).recenttracks.track[0];
+                    greaseyeti.lastfm_track = mostRecentTrack.artist["#text"] + ' – ' + mostRecentTrack.name;
+                    greaseyeti.lastfm_timestamp = mostRecentTrack.date || 'Right Now';
 
                     greaseyeti.lastfm_lastcheck = Math.round(start / 1000);
                     saveGreaseyeti(true);
@@ -1036,12 +1039,12 @@ function versionCheck() {
             if (responseDetails.status == 200) {
                 var result = JSON.parse(responseDetails.responseText);
                 if (settings_page) {
-                    if (result.version > version_num) {
+                    if (result.version > GM_info.script.version) {
                         $('table.greaseyeti_settings')
                             .prepend('<tr>'
                                 + '<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">'
                                 + '<strong> A new version of GreaseYETI is out. </strong><br/>'
-                                + '<strong> Your version :  </strong>' + version_num.toFixed(2)
+                                + '<strong> Your version :  </strong>' + GM_info.script.version.toFixed(2)
                                 + '<strong> Current version :  </strong>' + result.version + '<br/>' + result.changes
                                 + '<br/>'
                                 + '<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a></td>'
@@ -1050,9 +1053,10 @@ function versionCheck() {
                         $('table.greaseyeti_settings')
                             .prepend('<tr><td style="background:#88ff88;font-weight:bold; text-align: center;color:black;padding:5px0">'
                                 + 'Your version of GreaseYETI is up-to-date. Current version: ' + result.version
+                                +  ((GM_info.script.version > result.version) ? ' (Your version is ' + GM_info.script.version + ' somehow)' : '')
                                 + '</td></tr>');
                     }
-                } else if (result.version > version_num) {
+                } else if (result.version > GM_info.script.version) {
                     $('body')
                         .prepend('<div style="position: absolute;top: 0;left:0;right:0;background: #ff8888;font-weight: bold;text-align: center;color: black;padding: 5px 0">'
                             + '<strong> A new version of GreaseYETI is out </strong> | '
@@ -1501,7 +1505,7 @@ function imgurLinks(message_container) {
         return;
     }
     // Check if each link is a valid Imgur link
-    message_container.find('.message-body a').each(function () {
+    message_container.find('.message a').each(function () {
         var anchor_link = $(this).attr('href');
         var imgur_regexp = /^https?:(\/\/i\.imgur\.com\/[a-zA-Z0-9]+)\.(webm|gif|gifv)$/i;
         var matches = anchor_link.match(imgur_regexp);
@@ -1527,9 +1531,8 @@ function gfycatLinks(message_container) {
     if (!ch('gfycat_integration')) {
         return;
     }
-    findMaxImageWidth();
     // Check if each link is a valid gfycat link
-    message_container.find('.message-body a').each(function () {
+    message_container.find('.message a').each(function () {
         var msg_container = $(this);
         var anchor_link = $(this).attr('href');
         var gfycat_regexp = /^https?:\/\/gfycat\.com\/([a-zA-Z0-9]+)$/i;
@@ -1676,7 +1679,7 @@ function toggleImage(img) {
             parentAnchor.find('.greaseyeti_img_collapsed')
                         .show();
         }
-        // If we clicked on the collapsed image
+    // If we clicked on the collapsed image
     } else {
         img.hide();
         // If we've already loaded the image, just show it.
@@ -1706,30 +1709,19 @@ function expandAllImages() {
     $(this).text(newtext);
 }
 // Check if we need to resize an image, and if so, do it.
+// If show_full_size is unset, toggle whether or not we resize the image.
 function resizeImage(img_span, show_full_size) {
     if (!ch('resize_images')) {
         return;
     }
-    img_span.css({
-        'width': 'auto', 'height': 'auto'
-    });
-    var img = img_span.find('img');
-    findMaxImageWidth();
-    var old_w = img.width();
-    if (old_w > max_img_size && !show_full_size) {
-        var new_h = Math.round(img.height() * max_img_size / old_w);
-        img.css('width', max_img_size + 'px');
-        img.css('height', new_h + 'px');
+    var image = img_span.find('img');
+    if (typeof show_full_size === "undefined") {
+        image.toggleClass('greaseyeti_resized_image');
+    } else if (show_full_size === true) {
+        image.removeClass('greaseyeti_resized_image');
     } else {
-        img.css('width', 'auto');
-        img.css('height', 'auto');
+        image.addClass('greaseyeti_resized_image');
     }
-}
-
-function findMaxImageWidth() {
-    max_img_size = Math.min(Math.min($(window).width(), $('div.body').width()) - 43 - $('.userpic')
-                .eq(0)
-                .width(), $('.message').eq(0).width()) - 5;
 }
 
 function openSpoilersOption() {
@@ -1770,7 +1762,7 @@ function chatModeOption() {
 function enableChatMode() {
     chat_mode_enabled = true;
     // Add CSS rules
-    $('body').before('<style type="text/css">	'
+    $('head').append('<style type="text/css">'
         + 'body.chat_mode td.userpic * {height : 45px;width : auto;}'
         + 'body.chat_mode td.userpic center {display : none}'
         + 'body.chat_mode div.body> small {display : none}'
