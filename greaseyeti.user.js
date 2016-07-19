@@ -15,7 +15,7 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.34
+// @version 2.35
 // @connect github.com
 // @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
@@ -660,7 +660,8 @@ function applyStyling() {
     var css = '.greaseyeti_nounderline_link { cursor: pointer; } ' +
         '.greaseyeti_link { cursor: pointer; text-decoration: underline; } ' +
         '.greaseyeti_imgur, .greaseyeti_gfycat { text-align: center; display: inline-block; } ' +
-        '.greaseyeti_resized_image { max-width: 100%; }';
+        'span.greaseyeti_resized_image { height: auto !important; width: auto !important; } ' + 
+        'span.greaseyeti_resized_image img { max-width: 100%; height: auto !important; }';
     $('head').append('<style type="text/css">' + css + '</style>');
 }
 
@@ -1710,17 +1711,18 @@ function expandAllImages() {
 }
 // Check if we need to resize an image, and if so, do it.
 // If show_full_size is unset, toggle whether or not we resize the image.
+// Apply the class to the span instead of the image -- the span gets a height/width assigned by LL that we need to override.
+// Easiest to override if we can target the span directly.
 function resizeImage(img_span, show_full_size) {
     if (!ch('resize_images')) {
         return;
     }
-    var image = img_span.find('img');
     if (typeof show_full_size === "undefined") {
-        image.toggleClass('greaseyeti_resized_image');
+        img_span.toggleClass('greaseyeti_resized_image');
     } else if (show_full_size === true) {
-        image.removeClass('greaseyeti_resized_image');
+        img_span.removeClass('greaseyeti_resized_image');
     } else {
-        image.addClass('greaseyeti_resized_image');
+        img_span.addClass('greaseyeti_resized_image');
     }
 }
 
