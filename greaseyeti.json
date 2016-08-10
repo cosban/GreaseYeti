@@ -1,3 +1,4 @@
 {
-	"version": 2.35,
+	"version": 2.36,
+	"changes": "Fix bug when highlighting users in topics."
 }

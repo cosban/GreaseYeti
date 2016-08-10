@@ -1377,7 +1377,7 @@ function stealthLogout() {
 }
 
 function highlightPost(message_container) {
-    message_container.find('.message-top').each(function () {
+    message_container.children('.message-top').each(function () {
         var message_top = $(this);
         var poster = findWhoPostedMessage(message_top.html());
         if (!anon_topic) {
