@@ -1,4 +1,4 @@
 {
-	"version": 2.36,
-	"changes": "Fix bug when highlighting users in topics."
+	"version": 2.37,
+	"changes": "If a highlighted user is quoted, that quote is now highlighted."
 }

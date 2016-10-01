@@ -15,7 +15,7 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.36
+// @version 2.37
 // @connect github.com
 // @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
@@ -1378,27 +1378,38 @@ function stealthLogout() {
 
 function highlightPost(message_container) {
     message_container.children('.message-top').each(function () {
-        var message_top = $(this);
-        var poster = findWhoPostedMessage(message_top.html());
-        if (!anon_topic) {
-            // Make sure it's not an anon topic
-            if (poster.indexOf('#') != -1) {
-                anon_topic = true;
-            } else {
-                var hcolor = getHighlightColor(poster, true);
-                if (hcolor !== false) {
-                    message_top.css('background-color', hcolor);
-                    message_top.parent().css('border-color', hcolor);
-                }
+        var message_top = [];
+        message_top.push($(this));
+        var quotes = $(this).parent().find('.message-body .message-top');
+        if (quotes) {
+            for (var i = 0; i < quotes.length; i++) {
+                var child = quotes[i];
+                message_top.push($(child));
             }
         }
-        if (anon_topic) {
-            findMyHumanNumber();
-            if (my_human_number == 0 || !ch('my_anon')) {
-                return;
+        for (var index in message_top) {
+            var top = message_top[index];
+            var poster = findWhoPostedMessage(top.html());
+            if (!anon_topic) {
+                // Make sure it's not an anon topic
+                if (poster.indexOf('#') != -1) {
+                    anon_topic = true;
+                } else {
+                    var hcolor = getHighlightColor(poster, true);
+                    if (hcolor !== false) {
+                        top.css('background-color', hcolor);
+                        top.parent().css('border-color', hcolor);
+                    }
+                }
             }
-            if ('Human #' + my_human_number == poster) {
-                message_top.css('background-color', ch('my_color'));
+            if (anon_topic) {
+                findMyHumanNumber();
+                if (my_human_number == 0 || !ch('my_anon')) {
+                    return;
+                }
+                if ('Human #' + my_human_number == poster) {
+                    top.css('background-color', ch('my_color'));
+                }
             }
         }
     });
