@@ -57,6 +57,7 @@ if (url.indexOf('loser.php?settings') != -1) {
     if (typeof greaseyeti === 'number') {
         greaseyeti = {};
     }
+    versionCheck();
     // DISPLAY SETTINGS - create some HTML.
     $('h1').html('GreaseYETI Settings');
     document.title = 'End of the Internet - GreaseYETI Settings';
@@ -598,7 +599,6 @@ messageHistoryLink();
 dramalinks();
 ctrlKeyShortcuts();
 lastFMListeners();
-versionCheck();
 confirmLeavingListeners();
 addClassToBody();
 applyStyling();
@@ -1027,10 +1027,6 @@ function indexHighlightedUsers(message_list) {
 }
 
 function versionCheck() {
-    var settings_page = (document.location.href.indexOf('endoftheinter.net/loser.php?settings') != -1);
-    if ((!ch('alert_new_versions') || ch('last_version_check', 0) + 43200 >= start / 1000) && !settings_page) {
-        return;
-    }
     GM_xmlhttpRequest({
         method: 'GET', url: 'https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.json', headers: {
             'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
@@ -1039,38 +1035,21 @@ function versionCheck() {
         }, onload: function (responseDetails) {
             if (responseDetails.status == 200) {
                 var result = JSON.parse(responseDetails.responseText);
-                if (settings_page) {
-                    if (result.version > GM_info.script.version) {
-                        $('table.greaseyeti_settings')
-                            .prepend('<tr>'
-                                + '<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">'
-                                + '<strong> A new version of GreaseYETI is out. </strong><br/>'
-                                + '<strong> Your version :  </strong>' + GM_info.script.version.toFixed(2)
-                                + '<strong> Current version :  </strong>' + result.version + '<br/>' + result.changes
-                                + '<br/>'
-                                + '<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a></td>'
-                                + '</tr>');
-                    } else {
-                        $('table.greaseyeti_settings')
-                            .prepend('<tr><td style="background:#88ff88;font-weight:bold; text-align: center;color:black;padding:5px0">'
-                                + 'Your version of GreaseYETI is up-to-date. Current version: ' + result.version
-                                +  ((GM_info.script.version > result.version) ? ' (Your version is ' + GM_info.script.version + ' somehow)' : '')
-                                + '</td></tr>');
-                    }
-                } else if (result.version > GM_info.script.version) {
-                    $('body')
-                        .prepend('<div style="position: absolute;top: 0;left:0;right:0;background: #ff8888;font-weight: bold;text-align: center;color: black;padding: 5px 0">'
-                            + '<strong> A new version of GreaseYETI is out </strong> | '
-                            + '<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a> | '
-                            + '<a href="//endoftheinter.net/loser.php?settings"> View Changes </a> |'
-                            + '<a style="cursor: pointer; text-decoration: underline" id="remove_bar_yeti"> Remove this damn bar </a>'
-                            + '</div>');
-                    $('#remove_bar_yeti').click(function () {
-                        $(this).parent().remove();
-                    });
+                if (result.version > GM_info.script.version) {
+                    $('table.greaseyeti_settings')
+                        .prepend('<tr>'
+                            + '<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">'
+                            + '<strong> A new version of GreaseYETI is out. Update via your GreaseMonkey/Tampermonkey scripts.</strong><br/>'
+                            + '<strong> Your version : </strong>' + GM_info.script.version.toFixed(2)
+                            + '<strong> Current version : </strong>' + result.version + '</td>'
+                            + '</tr>');
+                } else {
+                    $('table.greaseyeti_settings')
+                        .prepend('<tr><td style="background:#88ff88;font-weight:bold; text-align: center;color:black;padding:5px0">'
+                            + 'Your version of GreaseYETI is up-to-date. Current version: ' + result.version
+                            +  ((GM_info.script.version > result.version) ? ' (Your version is ' + GM_info.script.version + ' somehow)' : '')
+                            + '</td></tr>');
                 }
-                greaseyeti.last_version_check = parseInt(start / 1000);
-                saveGreaseyeti(true);
             }
         }
     });
