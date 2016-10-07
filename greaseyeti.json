@@ -1,4 +1,4 @@
 {
-	"version": 2.37,
-	"changes": "If a highlighted user is quoted, that quote is now highlighted."
+	"version": 2.38,
+	"changes": "Fix Like/Repeat in Chrome"
 }

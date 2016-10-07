@@ -15,7 +15,7 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.37
+// @version 2.38
 // @connect github.com
 // @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
@@ -57,6 +57,7 @@ if (url.indexOf('loser.php?settings') != -1) {
     if (typeof greaseyeti === 'number') {
         greaseyeti = {};
     }
+    versionCheck();
     // DISPLAY SETTINGS - create some HTML.
     $('h1').html('GreaseYETI Settings');
     document.title = 'End of the Internet - GreaseYETI Settings';
@@ -598,7 +599,6 @@ messageHistoryLink();
 dramalinks();
 ctrlKeyShortcuts();
 lastFMListeners();
-versionCheck();
 confirmLeavingListeners();
 addClassToBody();
 applyStyling();
@@ -1027,10 +1027,6 @@ function indexHighlightedUsers(message_list) {
 }
 
 function versionCheck() {
-    var settings_page = (document.location.href.indexOf('endoftheinter.net/loser.php?settings') != -1);
-    if ((!ch('alert_new_versions') || ch('last_version_check', 0) + 43200 >= start / 1000) && !settings_page) {
-        return;
-    }
     GM_xmlhttpRequest({
         method: 'GET', url: 'https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.json', headers: {
             'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
@@ -1039,38 +1035,21 @@ function versionCheck() {
         }, onload: function (responseDetails) {
             if (responseDetails.status == 200) {
                 var result = JSON.parse(responseDetails.responseText);
-                if (settings_page) {
-                    if (result.version > GM_info.script.version) {
-                        $('table.greaseyeti_settings')
-                            .prepend('<tr>'
-                                + '<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">'
-                                + '<strong> A new version of GreaseYETI is out. </strong><br/>'
-                                + '<strong> Your version :  </strong>' + GM_info.script.version.toFixed(2)
-                                + '<strong> Current version :  </strong>' + result.version + '<br/>' + result.changes
-                                + '<br/>'
-                                + '<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a></td>'
-                                + '</tr>');
-                    } else {
-                        $('table.greaseyeti_settings')
-                            .prepend('<tr><td style="background:#88ff88;font-weight:bold; text-align: center;color:black;padding:5px0">'
-                                + 'Your version of GreaseYETI is up-to-date. Current version: ' + result.version
-                                +  ((GM_info.script.version > result.version) ? ' (Your version is ' + GM_info.script.version + ' somehow)' : '')
-                                + '</td></tr>');
-                    }
-                } else if (result.version > GM_info.script.version) {
-                    $('body')
-                        .prepend('<div style="position: absolute;top: 0;left:0;right:0;background: #ff8888;font-weight: bold;text-align: center;color: black;padding: 5px 0">'
-                            + '<strong> A new version of GreaseYETI is out </strong> | '
-                            + '<a href="https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js"> Update </a> | '
-                            + '<a href="//endoftheinter.net/loser.php?settings"> View Changes </a> |'
-                            + '<a style="cursor: pointer; text-decoration: underline" id="remove_bar_yeti"> Remove this damn bar </a>'
-                            + '</div>');
-                    $('#remove_bar_yeti').click(function () {
-                        $(this).parent().remove();
-                    });
+                if (result.version > GM_info.script.version) {
+                    $('table.greaseyeti_settings')
+                        .prepend('<tr>'
+                            + '<td style="background: #ff8888; text-align: center; color: black; padding: 5px 0">'
+                            + '<strong> A new version of GreaseYETI is out. Update via your GreaseMonkey/Tampermonkey scripts.</strong><br/>'
+                            + '<strong> Your version : </strong>' + GM_info.script.version.toFixed(2)
+                            + '<strong> Current version : </strong>' + result.version + '</td>'
+                            + '</tr>');
+                } else {
+                    $('table.greaseyeti_settings')
+                        .prepend('<tr><td style="background:#88ff88;font-weight:bold; text-align: center;color:black;padding:5px0">'
+                            + 'Your version of GreaseYETI is up-to-date. Current version: ' + result.version
+                            +  ((GM_info.script.version > result.version) ? ' (Your version is ' + GM_info.script.version + ' somehow)' : '')
+                            + '</td></tr>');
                 }
-                greaseyeti.last_version_check = parseInt(start / 1000);
-                saveGreaseyeti(true);
             }
         }
     });
@@ -1377,39 +1356,30 @@ function stealthLogout() {
 }
 
 function highlightPost(message_container) {
-    message_container.children('.message-top').each(function () {
-        var message_top = [];
-        message_top.push($(this));
-        var quotes = $(this).parent().find('.message-body .message-top');
-        if (quotes) {
-            for (var i = 0; i < quotes.length; i++) {
-                var child = quotes[i];
-                message_top.push($(child));
+    // The first message is the actual message header. If there are
+    // other .message-tops, they are quotes.
+    message_container.find('.message-top').each(function() {
+        var poster = findWhoPostedMessage($(this).html());
+        if (!anon_topic) {
+            // Make sure it's not an anon topic
+            if (poster.indexOf('#') != -1) {
+                anon_topic = true;
+             } else {
+                var hcolor = getHighlightColor(poster, true);
+                if (hcolor !== false) {
+                    $(this).css('background-color', hcolor);
+                    $(this).parent().css('border-color', hcolor);
+                }
             }
         }
-        for (var index in message_top) {
-            var top = message_top[index];
-            var poster = findWhoPostedMessage(top.html());
-            if (!anon_topic) {
-                // Make sure it's not an anon topic
-                if (poster.indexOf('#') != -1) {
-                    anon_topic = true;
-                } else {
-                    var hcolor = getHighlightColor(poster, true);
-                    if (hcolor !== false) {
-                        top.css('background-color', hcolor);
-                        top.parent().css('border-color', hcolor);
-                    }
-                }
+        if (anon_topic) {
+            findMyHumanNumber();
+            if (my_human_number == 0 || !ch('my_anon')) {
+                return;
             }
-            if (anon_topic) {
-                findMyHumanNumber();
-                if (my_human_number == 0 || !ch('my_anon')) {
-                    return;
-                }
-                if ('Human #' + my_human_number == poster) {
-                    top.css('background-color', ch('my_color'));
-                }
+            if ('Human #' + my_human_number == poster) {
+                $(this).css('background-color', ch('my_color'));
+                $(this).parent().css('border-color', ch('my_color'));
             }
         }
     });
