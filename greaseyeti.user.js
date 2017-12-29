@@ -15,8 +15,10 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.38
+// @version 2.39
 // @connect github.com
+// @connect audioscrobbler.com
+// @connect endoftheinter.net
 // @updateURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // @downloadURL https://github.com/cosban/GreaseYeti/raw/master/greaseyeti.user.js
 // ==/UserScript==
@@ -598,7 +600,7 @@ stealthLogout();
 messageHistoryLink();
 dramalinks();
 ctrlKeyShortcuts();
-lastFMListeners();
+checkLastFM();
 confirmLeavingListeners();
 addClassToBody();
 applyStyling();
@@ -660,7 +662,7 @@ function applyStyling() {
     var css = '.greaseyeti_nounderline_link { cursor: pointer; } ' +
         '.greaseyeti_link { cursor: pointer; text-decoration: underline; } ' +
         '.greaseyeti_imgur, .greaseyeti_gfycat { text-align: center; display: inline-block; } ' +
-        'span.greaseyeti_resized_image { height: auto !important; width: auto !important; } ' + 
+        'span.greaseyeti_resized_image { height: auto !important; width: auto !important; } ' +
         'span.greaseyeti_resized_image img { max-width: 100%; height: auto !important; }';
     $('head').append('<style type="text/css">' + css + '</style>');
 }
@@ -719,8 +721,8 @@ function dramalinks() {
             if (responseDetails.status == 200) {
                 var dl = responseDetails.responseText;
                 dl = dl.slice(dl.indexOf('<!--- NEW STORIES GO HERE --->') + 30);
-                var color = dl.slice(dl.indexOf('{{') + 2)
-                              .replace('}}', '');
+                var color = dl.match(/{{([A-Za-z0-9]+)}}/);
+                if (color) color = color[1];
                 dl = dl.slice(0, dl.indexOf('</div>'));
                 dl = dl.replace(/\[\[(.+?)(\|(.+?))\]\]/g, '<a href="http://wiki.endoftheinter.net/index.php/$1">$3</a>');
                 dl = dl.replace(/\[\[(.+?)\]\]/g, '<a href="http://wiki.endoftheinter.net/index.php/$1">$1</a>');
@@ -814,7 +816,7 @@ function dramalinks() {
                 $('.userbar')
                     .eq(0)
                     .before('<div id="dramalinks_ticker" style="padding: 4px"><strong>' + color + ':</strong>' + dl
-                        + '</div>');
+                         + '</div>');
                 $('#dramalinks_ticker').css('background', dl_bgcolor);
                 $('#dramalinks_ticker, #dramalinks_ticker a').css('color', dl_textcolor);
             }
@@ -904,33 +906,27 @@ function ctrlKeyShortcuts() {
     });
 }
 
-function lastFMListeners() {
-    if (!ch('lastfm_integration')) {
-        return;
-    }
-    checkLastFM();
-    $('input[value="Post Message"], input[value="Preview Message"]').click(function () {
-        $(this).parents('form').find('textarea').val(function (i, v) {
-            var d = new Date(ch('lastfm_timestamp', '-1')).getTime();
-            var now = new Date();
-            var stamp = 'Just now';
-            if (now - d > 5 * 60000) {
-                stamp = Math.floor((now - d) / 60000) + 'm ago';
-            }
-            if (now - d > 3600000) {
-                stamp = Math.floor((now - d) / 3600000) + 'h ago';
-            }
-            if (now - d > 86400000) {
-                stamp = Math.floor((now - d) / 86400000) + ' days ago';
-            }
-            return v.replace('%TRACK%', ch('lastfm_track', 'None'))
-                    .replace('%TIME%', stamp);
-        });
+function fillLastFmPlaceholders() {
+    $('form[action*="postmsg"]').find('textarea').val(function (i, v) {
+        var d = new Date(ch('lastfm_timestamp', '-1')).getTime();
+        var now = new Date();
+        var stamp = 'Just now';
+        if (now - d > 5 * 60000) {
+            stamp = Math.floor((now - d) / 60000) + 'm ago';
+        }
+        if (now - d > 3600000) {
+            stamp = Math.floor((now - d) / 3600000) + 'h ago';
+        }
+        if (now - d > 86400000) {
+            stamp = Math.floor((now - d) / 86400000) + ' days ago';
+        }
+        return v.replace('%TRACK%', ch('lastfm_track', 'None'))
+            .replace('%TIME%', stamp);
     });
 }
 
 function checkLastFM() {
-    if (ch('lastfm_username').length < 1) {
+    if (!ch('lastfm_integration') || ch('lastfm_username').length < 1) {
         return;
     }
     if (start / 1000 > (ch('lastfm_lastcheck', 0) + ch('lastfm_freq') * 60)) {
@@ -952,9 +948,12 @@ function checkLastFM() {
 
                     greaseyeti.lastfm_lastcheck = Math.round(start / 1000);
                     saveGreaseyeti(true);
+                    fillLastFmPlaceholders();
                 }
             }
         });
+    } else {
+        fillLastFmPlaceholders();
     }
 }
 
