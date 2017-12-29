@@ -1,4 +1,4 @@
 {
-	"version": 2.38,
-	"changes": "Fix Like/Repeat in Chrome"
+	"version": 2.39,
+	"changes": "Fix Dramalinks and Last.fm integration"
 }
