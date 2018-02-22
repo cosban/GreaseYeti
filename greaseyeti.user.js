@@ -15,7 +15,7 @@
 // @grant GM_getValue
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
-// @version 2.39
+// @version 2.40
 // @connect github.com
 // @connect audioscrobbler.com
 // @connect endoftheinter.net
@@ -464,7 +464,7 @@ if (url.indexOf('loser.php?settings') != -1) {
     // * TOPIC LISTS *
     // ***************
 }
-if (document.location.href.indexOf('.net/topics/') != -1) {
+if (document.location.href.indexOf('.net/topics/') != -1 || document.location.href.indexOf('.net/history.php') != -1) {
     var unread_topics = [], next_page;
     // Mark the next page URL
     var next_page_link = $('div.infobar').eq(-2).find('a');
@@ -1065,7 +1065,7 @@ function processTopicList() {
         .each(function () {
             $(this).addClass('gm_checked');
             var cells = $(this).find('td');
-            if (cells.length != 4) {
+            if (cells.length != 4 && cells.length != 5) {
                 return;
             }
             // Fetch the topic_id

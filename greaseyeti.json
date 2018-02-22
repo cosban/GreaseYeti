@@ -1,4 +1,4 @@
 {
-	"version": 2.39,
-	"changes": "Fix Dramalinks and Last.fm integration"
+	"version": 2.40,
+	"changes": "Add Topic processing to message history"
 }
